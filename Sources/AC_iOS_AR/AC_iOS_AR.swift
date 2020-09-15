@@ -1,3 +1,3 @@
 struct AC_iOS_AR {
-    var text = "Hello, World!"
+    var text = "Hello, World2!"
 }
