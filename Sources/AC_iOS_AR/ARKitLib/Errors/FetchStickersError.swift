@@ -7,7 +7,7 @@
 //
 
 import Foundation
-//import SwiftyJSON
+import SwiftyJSON
 
 enum FetchStickersError: Error {
     case unknown

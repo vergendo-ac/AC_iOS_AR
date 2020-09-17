@@ -7,7 +7,7 @@
 //
 
 import Foundation
-//import SwiftyJSON
+import SwiftyJSON
 import ARKit
 
 typealias ARFNodeDict = [String: [SCNNode]]

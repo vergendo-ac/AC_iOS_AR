@@ -10,7 +10,7 @@ import Foundation
 
 import Foundation
 //import Alamofire
-//import SwiftyJSON
+import SwiftyJSON
 import ARKit
 
 class ServerCamera {

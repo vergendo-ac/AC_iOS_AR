@@ -6,7 +6,7 @@
 //  Copyright © 2019 Unit. All rights reserved.
 //
 import Foundation
-//import SwiftyJSON
+import SwiftyJSON
 import ARKit
 
 class Node3D: Equatable {
