@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="RatingCellT2" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="8" height="8"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="8" height="8"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="r9F-TJ-JSr" customClass="RatingCircleViewT2" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="0.0" width="8" height="8"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="pxB-Ye-zZw"/>
+                    </view>
+                </subviews>
+            </view>
+            <constraints>
+                <constraint firstItem="r9F-TJ-JSr" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="L4U-8d-xvr"/>
+                <constraint firstItem="r9F-TJ-JSr" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="Lto-qY-hm9"/>
+                <constraint firstAttribute="trailing" secondItem="r9F-TJ-JSr" secondAttribute="trailing" id="Vjm-Mk-hxt"/>
+                <constraint firstItem="r9F-TJ-JSr" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="nwW-6s-GA5"/>
+                <constraint firstItem="r9F-TJ-JSr" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="uLC-zU-q4B"/>
+                <constraint firstAttribute="bottom" secondItem="r9F-TJ-JSr" secondAttribute="bottom" id="ujB-4x-aCT"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <connections>
+                <outlet property="ratingCircleView" destination="r9F-TJ-JSr" id="tkK-Yk-yhM"/>
+            </connections>
+            <point key="canvasLocation" x="120" y="-91.754122938530742"/>
+        </collectionViewCell>
+    </objects>
+</document>

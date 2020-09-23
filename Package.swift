@@ -12,7 +12,7 @@ let package = Package(
         // Products define the executables and libraries produced by a package, and make them visible to other packages.
         .library(
             name: "AC_iOS_AR",
-            targets: ["AC_iOS_AR"]),
+            targets: ["AC_iOS_AR"])
     ],
     dependencies: [
         .package(url: "https://github.com/SwiftyJSON/SwiftyJSON.git", from: "4.0.0")
@@ -25,6 +25,6 @@ let package = Package(
             dependencies: ["SwiftyJSON"]),
         .testTarget(
             name: "AC_iOS_ARTests",
-            dependencies: ["AC_iOS_AR"]),
+            dependencies: ["AC_iOS_AR"])
     ]
 )

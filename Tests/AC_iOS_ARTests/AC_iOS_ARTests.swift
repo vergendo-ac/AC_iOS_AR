@@ -10,6 +10,6 @@ final class AC_iOS_ARTests: XCTestCase {
     }
 
     static var allTests = [
-        ("testExample", testExample),
+        ("testExample", testExample)
     ]
 }
