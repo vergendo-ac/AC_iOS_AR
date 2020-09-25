@@ -23,7 +23,7 @@ class HalfRealTimeSceneWorker {
         self.image.doImageDataRequest(image: image, completion: completion)
     }
     
-    //MARK: calc points!!!
+    //MARK: calc points!!!!
     func calcNodesTriplePoints(maybeNodes: [StickerModels.Node]?, imageSize: CGSize, windowSize: CGSize, maybeDeviceOrientation: UIDeviceOrientation?) -> PointModels.TripleCentralPoints? {
         return self.point.calcNodesTriplePoints(maybeNodes: maybeNodes, imageSize: imageSize, windowSize: windowSize, maybeDeviceOrientation: maybeDeviceOrientation)
     }
