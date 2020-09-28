@@ -35,6 +35,7 @@ class HalfRealTimeSceneViewController: UIViewController {
     
     //MARK: Properties
     var interactor: HalfRealTimeSceneBusinessLogic?
+    
     var router: (NSObjectProtocol & HalfRealTimeSceneRoutingLogic & HalfRealTimeSceneDataPassing)?
     
     var cameraManager: BaseCameraManagerProtocol?
