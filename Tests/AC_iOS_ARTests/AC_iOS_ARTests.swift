@@ -6,7 +6,8 @@ final class AC_iOS_ARTests: XCTestCase {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct
         // results.
-        XCTAssertEqual(AC_iOS_AR().text, "Hello, World!")
+        //XCTAssertEqual(AC_iOS_AR().text, "Hello, World!")
+        XCTAssertEqual("test", "test")
     }
 
     static var allTests = [

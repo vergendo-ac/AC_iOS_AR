@@ -29,9 +29,13 @@ protocol HalfRealTimeSceneDisplayLogic: class {
     func displayArSessionRun(viewModel: HalfRealTimeScene.ArSessionRun.ViewModel)
     func restoreCameraState()
     
+    func displayTakeNextPhoto(viewModel: HalfRealTimeScene.TakeNextPhoto.ViewModel)
+    
 }
 
 class HalfRealTimeSceneViewController: UIViewController {
+    
+    static let shared = HalfRealTimeSceneViewController()
     
     //MARK: Properties
     var interactor: HalfRealTimeSceneBusinessLogic?
@@ -271,7 +275,7 @@ class HalfRealTimeSceneViewController: UIViewController {
         }
     }
     
-    fileprivate func takePhoto(completion: @escaping (Data?, AlertMessage?, UIDeviceOrientation?) -> Void) {
+    func takePhoto(completion: @escaping (Data?, AlertMessage?, UIDeviceOrientation?) -> Void) {
         let request = HalfRealTimeScene.TakeNextPhoto.Request(completion: completion)
         self.interactor?.takeNextPhoto(request: request)
     }
@@ -656,6 +660,10 @@ extension HalfRealTimeSceneViewController: HalfRealTimeSceneDisplayLogic {
         default:
             break
         }
+    }
+    
+    func displayTakeNextPhoto(viewModel: HalfRealTimeScene.TakeNextPhoto.ViewModel) {
+        //viewModel.completion?()
     }
     
 }

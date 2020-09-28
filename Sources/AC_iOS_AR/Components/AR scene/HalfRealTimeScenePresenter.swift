@@ -80,7 +80,7 @@ class HalfRealTimeScenePresenter: HalfRealTimeScenePresentationLogic {
     
     func presentTakeNextPhoto(response: HalfRealTimeScene.TakeNextPhoto.Response) {
         let viewModel = HalfRealTimeScene.TakeNextPhoto.ViewModel(completion: response.completion)
-        //viewController?.displayTakeNextPhoto(viewModel: viewModel)
+        viewController?.displayTakeNextPhoto(viewModel: viewModel)
     }
     
     func presentNodes(response: HalfRealTimeScene.Nodes.Response) {
