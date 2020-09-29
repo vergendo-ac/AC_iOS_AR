@@ -30,7 +30,8 @@ open class AR {
             AR.controller.stopAR()
         }
 
-        public static func show(localizationResult: LocalizationResult) {
+        public static func show(localizationData: Data) {
+            guard let localizationResult = try? JSONDecoder().decode(LocalizationResult.self, from: localizationData) else { return }
             AR.controller.show(localizationResult: localizationResult)
         }
 
