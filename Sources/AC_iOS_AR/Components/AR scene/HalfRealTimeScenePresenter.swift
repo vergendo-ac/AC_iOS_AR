@@ -30,7 +30,11 @@ protocol HalfRealTimeScenePresentationLogic {
     func presentArSessionRun(response: HalfRealTimeScene.ArSessionRun.Response)
     
     //MARK: new API
-    //func presentLocalize(response: HalfRealTimeScene.Localize.Response)
+    func presentLocalize(response: HalfRealTimeScene.Localize.Response)
+    func presentKfsFrameSelector(response: HalfRealTimeScene.FrameSelector.Response)
+    
+    func presentLocalizeData(response: HalfRealTimeScene.LocalizeData.Response)
+    func presentARObjects(response: HalfRealTimeScene.ARObjects.Response)
 }
 
 class HalfRealTimeScenePresenter: HalfRealTimeScenePresentationLogic {
@@ -286,8 +290,30 @@ class HalfRealTimeScenePresenter: HalfRealTimeScenePresentationLogic {
         viewController?.displayArSessionRun(viewModel: viewModel)
     }
     
-    /*func presentLocalize(response: HalfRealTimeScene.Localize.Response) {
-        let result = response.serverResult
+    func presentLocalize(response: HalfRealTimeScene.Localize.Response) {
+        let viewModel = HalfRealTimeScene.Localize.ViewModel()
+        viewController?.displayLocalize(viewModel: viewModel)
+    }
+    
+    func presentKfsFrameSelector(response: HalfRealTimeScene.FrameSelector.Response) {
+        let viewModel = HalfRealTimeScene.FrameSelector.ViewModel(posePixelBuffer: response.posePixelBuffer)
+        
+        if Thread.isMainThread {
+            DispatchQueue.global().async { [weak self] in
+                self?.viewController?.displayKfsFrameSelector(viewModel: viewModel)
+            }
+        } else {
+            viewController?.displayKfsFrameSelector(viewModel: viewModel)
+        }
+    }
+    
+    func presentLocalizeData(response: HalfRealTimeScene.LocalizeData.Response) {
+        let viewModel = HalfRealTimeScene.LocalizeData.ViewModel()
+        viewController?.displayLocalizeData(viewModel: viewModel)
+    }
+    
+    func presentARObjects(response: HalfRealTimeScene.ARObjects.Response) {
+        let result = response.localizationResult
         
         // MARK: Localize Error
         
@@ -338,6 +364,7 @@ class HalfRealTimeScenePresenter: HalfRealTimeScenePresentationLogic {
         let scene = Scene3D(reconstructionId: result.reconstructionId, nodes: nodes, srvCamera: serverCamera, stickersData: objectsInfo)
         let viewModel = HalfRealTimeScene.GetStickers3D.ViewModel(scene: scene)
         self.viewController?.displayStickers3D(viewModel: viewModel)
-    }*/
+
+    }
     
 }

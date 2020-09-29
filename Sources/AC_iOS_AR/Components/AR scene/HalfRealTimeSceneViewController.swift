@@ -31,6 +31,10 @@ protocol HalfRealTimeSceneDisplayLogic: class {
     
     func displayTakeNextPhoto(viewModel: HalfRealTimeScene.TakeNextPhoto.ViewModel)
     
+    func displayLocalizeData(viewModel: HalfRealTimeScene.LocalizeData.ViewModel)
+    func displayLocalize(viewModel:  HalfRealTimeScene.Localize.ViewModel)
+    func displayARObjects(viewModel:  HalfRealTimeScene.ARObjects.ViewModel)
+    
 }
 
 class HalfRealTimeSceneViewController: UIViewController {
@@ -82,6 +86,8 @@ class HalfRealTimeSceneViewController: UIViewController {
     
     private let noStickersMaxSeconds: Int = 3 //10
     
+    private var arBackView: UIView?
+    
     // MARK: Object lifecycle
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -107,31 +113,55 @@ class HalfRealTimeSceneViewController: UIViewController {
         self.makeSettings()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        DispatchQueue.main.async {
-            self.start()
-        }
-    }
-    
-
     private func makeSettings() {
         let request = HalfRealTimeScene.Settings.Request(pinViewSize: self.view.frame.size)
         self.interactor?.makeSettings(request: request)
     }
     
-    private func start() {
-        let startRequest = HalfRealTimeScene.Start.Request()
+    //MARK: SDK AR start block
+    
+    func start() {
+        let startRequest = HalfRealTimeScene.Start.Request(isStartFetching: self.arBackView != nil)
         interactor?.start(request: startRequest)
     }
     
+    func set(arView backView: UIView) {
+        self.arBackView = backView
+    }
+    
+    private func startAR() {
+        UIApplication.shared.isIdleTimerDisabled = true
+        self.clearNodes {
+            self.switchCamera(isON: true)
+        }
+    }
+    
+    func stopAR() {
+        DispatchQueue.main.async {
+            UIApplication.shared.isIdleTimerDisabled = false
+            self.switchCamera(isON: false)
+        }
+    }
+    
+    func getLocalizationData(completion: @escaping (_ imageData: Data?, _ location: CLLocation?, _ photoInfo: [String:Any]?) -> Void) {
+        let request = HalfRealTimeScene.LocalizeData.Request(completion: completion)
+        interactor?.getLocalizeData(request: request)
+    }
+    
+    func show(localizationResult: LocalizationResult) {
+        let request = HalfRealTimeScene.ARObjects.Request(localizationResult: localizationResult)
+        interactor?.showARObjects(request: request)
+    }
+
+    
     private func restoreArCameraManager() {
-        guard UserDefaults.arCameraEnabled ?? false, let cameraManager = (self.cameraManager as? ArCameraManager) else {
+        guard UserDefaults.arCameraEnabled ?? true, let cameraManager = (self.cameraManager as? ArCameraManager) else {
             return
         }
         
         arSessionStatusEnabled = (UserDefaults.arStatusEnabled ?? false)
         let context = ArCameraContext()
-        context.setArPlaneMaxDistance(Double(UserDefaults.arPlaneMaxDistanceValue ?? 0))
+        context.setArPlaneMaxDistance(Double(UserDefaults.arPlaneMaxDistanceValue ?? 200))
         
         if context.arPlaneMaxDistance > 0 {
             context.setScaleCalculationType(.arkit)
@@ -202,18 +232,20 @@ class HalfRealTimeSceneViewController: UIViewController {
     
     private func restoreCameraManager() {
         
-        let isArCameraEnabled = UserDefaults.arCameraEnabled ?? false
+        guard let viewForAR = self.arBackView else { return }
+        
+        let isArCameraEnabled = UserDefaults.arCameraEnabled ?? true
         cameraManager = isArCameraEnabled ? ArCameraManager.sharedInstance : YaCameraManager.sharedInstance
         
         if isArCameraEnabled {
             if let cm = (cameraManager as? ArCameraManager), cm.view == nil {
-                cm.addPreviewLayer(to: self.view)
+                cm.addPreviewLayer(to: viewForAR)
             }
             restoreArCameraManager()
             return
         }
         
-        cameraManager?.addPreviewLayer(to: self.view)
+        cameraManager?.addPreviewLayer(to: viewForAR)
         cameraManager?.refreshSettings()
         
         cameraManager?.resumeCaptureSession { size in
@@ -227,7 +259,6 @@ class HalfRealTimeSceneViewController: UIViewController {
         })
         
     }
-    
     
     func switchCamera(isON: Bool) {
         switch isON {
@@ -275,7 +306,7 @@ class HalfRealTimeSceneViewController: UIViewController {
         }
     }
     
-    func takePhoto(completion: @escaping (Data?, AlertMessage?, UIDeviceOrientation?) -> Void) {
+    private func takePhoto(completion: @escaping (Data?, AlertMessage?, UIDeviceOrientation?) -> Void) {
         let request = HalfRealTimeScene.TakeNextPhoto.Request(completion: completion)
         self.interactor?.takeNextPhoto(request: request)
     }
@@ -361,6 +392,17 @@ class HalfRealTimeSceneViewController: UIViewController {
             interactor?.removeArContent(request: request)
         }
     }
+    
+    private func kfsSelectorRequest(posePixelBuffer: PixelBufferWithPose) {
+        guard self.cameraState.isArkit else {
+            //print("[check] yet handling, isArkit:\(self.cameraState.isArkit)")
+            return
+        }
+        
+        let request = HalfRealTimeScene.FrameSelector.Request(posePixelBuffer: posePixelBuffer)
+        self.interactor?.kfsFrameSelector(request: request)
+    }
+
 }
 
 extension HalfRealTimeSceneViewController: HalfRealTimeSceneDisplayLogic {
@@ -504,8 +546,9 @@ extension HalfRealTimeSceneViewController: HalfRealTimeSceneDisplayLogic {
     }
     
     func displayStart(viewModel: HalfRealTimeScene.Start.ViewModel) {
-        //self.showNodesNum()
-        //self.doFetchingProcess(isStartFetching: viewModel.isStartFetching)
+        if viewModel.isStartFetching {
+            self.startAR()
+        }
     }
     
     func displayArSessionRun(viewModel: HalfRealTimeScene.ArSessionRun.ViewModel) {
@@ -653,9 +696,10 @@ extension HalfRealTimeSceneViewController: HalfRealTimeSceneDisplayLogic {
             let fileName = "\(ImageModels.ImageSource.PhotoCamera.rawValue)1.jpg"
             let imageInfo = ImageModels.Image(data: dataImage, filename: fileName, size: UIImage(data: dataImage)!.size)
             
-//            let request = HalfRealTimeScene.GetStickers3D.Request(
-//                imageInfo: imageInfo)
-//            self.interactor?.getStickers3DFromServer(request: request)
+            if let arkitView = cameraManager.arKitSceneView, let intrinsics = arkitView.session.currentFrame?.camera.intrinsics {
+                let request = HalfRealTimeScene.Localize.Request(image: imageInfo, intrinsics: intrinsics)
+                self.interactor?.localize(request: request)
+            }
             
         default:
             break
@@ -664,6 +708,18 @@ extension HalfRealTimeSceneViewController: HalfRealTimeSceneDisplayLogic {
     
     func displayTakeNextPhoto(viewModel: HalfRealTimeScene.TakeNextPhoto.ViewModel) {
         //viewModel.completion?()
+    }
+    
+    func displayLocalizeData(viewModel: HalfRealTimeScene.LocalizeData.ViewModel) {
+        print("HalfRealTimeScene.LocalizeData completion saved")
+    }
+    
+    func displayLocalize(viewModel:  HalfRealTimeScene.Localize.ViewModel) {
+        print("HalfRealTimeScene.Localize finished")
+    }
+    
+    func displayARObjects(viewModel:  HalfRealTimeScene.ARObjects.ViewModel) {
+        print("HalfRealTimeScene.ARObjects finished")
     }
     
 }
@@ -723,6 +779,10 @@ extension HalfRealTimeSceneViewController: ArCameraManagerDelegate {
                     let buffer = PixelBufferWithPose(id: UUID().uuidString, image: frame.capturedImage, cameraPose: frame.camera.transform)
                     _ = context.put(posePixelBuffer: buffer)
                     
+                    if let stopKFS = router?.dataStore?.stopKFS, !stopKFS {
+                        kfsSelectorRequest(posePixelBuffer: buffer)
+                    }
+
                 default:
                     print("[session] session not ready, state = \(frame.camera.trackingState)")
                     return

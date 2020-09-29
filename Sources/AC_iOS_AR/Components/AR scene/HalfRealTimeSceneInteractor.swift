@@ -50,6 +50,15 @@ protocol HalfRealTimeSceneBusinessLogic {
     func handleVideoSticker(request: HalfRealTimeScene.VideoSticker.Request)
     func clearArContent(request: HalfRealTimeScene.ClearArContent.Request)
     func removeArContent(request: HalfRealTimeScene.ClearArContent.Request)
+    
+    func kfsFrameSelector(request: HalfRealTimeScene.FrameSelector.Request)
+    func kfsClearParams()
+    
+    func localize(request: HalfRealTimeScene.Localize.Request)
+    
+    func getLocalizeData(request: HalfRealTimeScene.LocalizeData.Request)
+    func showARObjects(request: HalfRealTimeScene.ARObjects.Request)
+
 }
 
 protocol HalfRealTimeSceneDataStore {
@@ -63,6 +72,8 @@ protocol HalfRealTimeSceneDataStore {
     var stickerSubviewYPositionUpdate: (CGFloat?) -> () { get set }
     
     var hasSensors: Bool { get set}
+    
+    var stopKFS: Bool { get set }
 
 }
 
@@ -90,7 +101,7 @@ class HalfRealTimeSceneInteractor: HalfRealTimeSceneDataStore {
     weak var uiNavigationController: UINavigationController?
     var pinView: UIView?//PassthroughView?
     var hasSensors: Bool = false
-
+    var stopKFS: Bool = true
     
     // arSession degradation parameters
     private var lastLocation: CLLocation?
@@ -142,6 +153,8 @@ class HalfRealTimeSceneInteractor: HalfRealTimeSceneDataStore {
     private var localizeAttempts: Int = 0
     private let localizeAttemptsLimit: Int = 30
     private var localizeIsFirstAttempt: Bool = true
+    private var localizeTimer: Timer?
+    private var localizeDataCompletion: ((_ imageData: Data?, _ location: CLLocation?, _ photoInfo: [String:Any]?) -> Void)?
     
     var errorsInARow: Int = 0 {
         didSet {
@@ -333,9 +346,14 @@ class HalfRealTimeSceneInteractor: HalfRealTimeSceneDataStore {
         let response = HalfRealTimeScene.Clusters.Response(clusters: Array(self.clusters.values))
         presenter?.presentClusters(response: response)
     }
+    
 }
 
 extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
+    
+    func kfsClearParams() {
+        self.stopKFS = false
+    }
     
     func startArCameraManager(request: HalfRealTimeScene.StartArCamera.Request) {
         arPinMaxDistance = UserDefaults.arPinMaxDistanceValue ?? 200
@@ -406,6 +424,7 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
                 
                 switch result.factor {
                     case .degradated:
+                        self.kfsClearParams()
                         self.restartArSession()
                     default:
                         break
@@ -449,6 +468,7 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
             
             switch result.factor {
                 case .degradated:
+                    self.kfsClearParams()
                     self.restartArSession()
                     let response = HalfRealTimeScene.ArSessionStatus.Response(factor: result.factor, disatnceType: result.distanceType, trackingState: request.trackingState, state: request.state)
                     self.presenter?.presentArSessionStatus(response: response)
@@ -502,8 +522,9 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
         self.stickers = nil
         self.isCameraStopped = self.currentOpenViewsNum > 0
         self.localizeIsFirstAttempt = true
+        self.stopKFS = true
         
-        let response = HalfRealTimeScene.Start.Response(isStartFetching: !(self.isCameraStopped))
+        let response = HalfRealTimeScene.Start.Response(isStartFetching: request.isStartFetching && !(self.isCameraStopped))
         presenter?.presentStart(response: response)
     }
     
@@ -984,6 +1005,51 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
         lastVideoNodes = [:]
     }
     
+    func kfsFrameSelector(request: HalfRealTimeScene.FrameSelector.Request) {
+        let response = HalfRealTimeScene.FrameSelector.Response(posePixelBuffer: request.posePixelBuffer)
+        presenter?.presentKfsFrameSelector(response: response)
+    }
+    
+    func localize(request: HalfRealTimeScene.Localize.Request) {
+        
+        guard let imageData = request.image.data, let location = currentLocation else {
+            return
+        }
+        
+        self.stopKFS = true
+        
+        self.currentImage = request.image
+        
+        var photoInfo: [String: Any] = [:]
+        
+        //MARK: photoInfo
+        photoInfo["fx"] = request.intrinsics.columns.0.x
+        photoInfo["fy"] = request.intrinsics.columns.1.y
+        photoInfo["cx"] = request.intrinsics.columns.2.x
+        photoInfo["cy"] = request.intrinsics.columns.2.y
+//        photoInfo["rotation"] as Int //0, 90, 180, 270
+//        photoInfo["focalLengthIn35mmFilm"] as Int
+//        photoInfo["mirrored"] as Bool
+        //localizeDataCompletion: ((_ imageData: Data?, _ location: CLLocation?, _ photoInfo: [String:String]?) -> Void)?
+        self.localizeDataCompletion?(imageData, location, photoInfo)
+        
+        let response = HalfRealTimeScene.Localize.Response()
+        self.presenter?.presentLocalize(response: response)
+
+    }
+    
+    func getLocalizeData(request: HalfRealTimeScene.LocalizeData.Request) {
+        self.localizeDataCompletion = request.completion
+        self.stopKFS = false
+        
+        let response = HalfRealTimeScene.LocalizeData.Response()
+        presenter?.presentLocalizeData(response: response)
+    }
+    
+    func showARObjects(request: HalfRealTimeScene.ARObjects.Request) {
+        let response = HalfRealTimeScene.ARObjects.Response(localizationResult: request.localizationResult)
+        self.presenter?.presentARObjects(response: response)
+    }
 
 }
 
@@ -994,7 +1060,8 @@ extension HalfRealTimeSceneInteractor: YaMotionManagerDelegate {
 }
 
 extension HalfRealTimeSceneInteractor: YaLocationManagerDelegate {
-    func update(heading: CLHeading) {
+    func update(location: CLLocation) {
+        self.currentLocation = location
     }
 }
 

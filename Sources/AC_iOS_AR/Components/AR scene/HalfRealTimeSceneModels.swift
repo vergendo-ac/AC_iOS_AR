@@ -323,6 +323,7 @@ enum HalfRealTimeScene {
     
     enum Start {
         struct Request {
+            let isStartFetching: Bool
         }
         struct Response {
             let isStartFetching: Bool
@@ -692,4 +693,45 @@ enum HalfRealTimeScene {
             let error: Error
         }
     }
+    
+    enum Localize {
+        struct Request {
+            let image: ImageModels.Image
+            let intrinsics: simd_float3x3
+        }
+        
+        struct Response {
+        }
+        
+        struct ViewModel {
+        }
+    }
+
+    enum ARObjects {
+        struct Request {
+            let localizationResult: LocalizationResult
+        }
+        
+        struct Response {
+            let localizationResult: LocalizationResult
+        }
+        
+        struct ViewModel {
+            let scene: Scene3D
+        }
+    }
+    
+
+    enum LocalizeData {
+        struct Request {
+            let completion: ((_ imageData: Data?, _ location: CLLocation?, _ photoInfo: [String:Any]?) -> Void)?
+        }
+        
+        struct Response {
+        }
+        
+        struct ViewModel {
+        }
+    }
+
 }
