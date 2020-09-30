@@ -516,8 +516,9 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
     
     func start(request: HalfRealTimeScene.Start.Request) {
         YaMotionManager.sharedInstance.delegate = self
-        YaLocationManager.sharedInstance.delegate = self
         YaMotionManager.sharedInstance.updateState()
+        YaLocationManager.sharedInstance.delegate = self
+        YaLocationManager.sharedInstance.startUpdating()
         self.errorsInARow = 0
         self.stickers = nil
         self.isCameraStopped = self.currentOpenViewsNum > 0
