@@ -306,7 +306,7 @@ class HalfRealTimeScenePresenter: HalfRealTimeScenePresentationLogic {
             viewController?.displayKfsFrameSelector(viewModel: viewModel)
         }*/
         
-        self?.viewController?.displayKfsFrameSelector(viewModel: viewModel)
+        self.viewController?.displayKfsFrameSelector(viewModel: viewModel)
     }
     
     func presentLocalizeData(response: HalfRealTimeScene.LocalizeData.Response) {
