@@ -1012,11 +1012,12 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
     
     func localize(request: HalfRealTimeScene.Localize.Request) {
         
+        self.stopKFS = true
+
         guard let imageData = request.image.data, let location = currentLocation else {
+            self.localizeDataCompletion?(nil, nil, nil)
             return
         }
-        
-        self.stopKFS = true
         
         self.currentImage = request.image
         
