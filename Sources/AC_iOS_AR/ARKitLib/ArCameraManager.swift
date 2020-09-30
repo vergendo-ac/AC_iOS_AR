@@ -158,7 +158,8 @@ class ArCameraManager: NSObject, BaseCameraManagerProtocol {
         arKitSceneView?.session.delegate = self
         //arKitSceneView?.debugOptions = [.showWorldOrigin, .showFeaturePoints]
         
-        
+        //self.arKitSceneView
+        //Tags.value.ARView.rawValue
         
         DispatchQueue.main.async {
             if self.arKitSceneView != nil {

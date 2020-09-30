@@ -341,17 +341,18 @@ class HalfRealTimeSceneViewController: UIViewController {
     
     private func showNodes(nodes: [UIView]?, frames: [UIView]?, completion: @escaping () -> Void ) {
         self.clearNodes {
+            guard let viewForAR = self.arBackView else { return }
             if let nodesViews = nodes, nodesViews.count > 0 {
                 print("kkk view - \(self.view.frame.size)")
                 
                 for nodeView in nodesViews {
-                    self.view.addSubview(nodeView) //nodesView
+                    viewForAR.addSubview(nodeView) //nodesView
                 }
             }
             
             if let frameViews = frames, frameViews.count > 0 {
                 for frameView in frameViews {
-                    self.view.addSubview(frameView)
+                    viewForAR.addSubview(frameView)
                 }
             }
             
@@ -360,6 +361,7 @@ class HalfRealTimeSceneViewController: UIViewController {
     }
     
     private func clearNodes(completion: @escaping () -> Void) {
+        guard let viewForAR = self.arBackView else { return }
         
         guard Thread.isMainThread else {
             DispatchQueue.main.async { [weak self] in
@@ -368,8 +370,8 @@ class HalfRealTimeSceneViewController: UIViewController {
             return
         }
         
-        for v in self.view.subviews {
-            if v.tag != Tags.value.BackImageView.rawValue {
+        for v in viewForAR.subviews {
+            if v.tag == Tags.value.HalfRealtimeStickerMarkerView.rawValue || v.tag == Tags.value.StickerMarkerFrameView.rawValue {
                 v.removeFromSuperview()
             }
         }
@@ -539,7 +541,7 @@ extension HalfRealTimeSceneViewController: HalfRealTimeSceneDisplayLogic {
     func displayNodes(viewModel: HalfRealTimeScene.Nodes.ViewModel) {
         self.showNodes(nodes: viewModel.views, frames: viewModel.frames) { [weak self] in
             guard let self = self else { return }
-            self.askSelfToTakePhoto()
+            //self.askSelfToTakePhoto()
         }
     }
     

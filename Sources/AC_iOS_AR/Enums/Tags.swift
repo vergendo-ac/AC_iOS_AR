@@ -19,6 +19,7 @@ class Tags {
         case PinsPassthroughView = 7
         case StickerMarkerFrameView = 8
         case StickerMarkerClusterView = 9
+        case ARView = 10
     }
     
 }
