@@ -790,6 +790,7 @@ extension HalfRealTimeSceneViewController: ArCameraManagerDelegate {
                     if let stopKFS = router?.dataStore?.stopKFS, !stopKFS, !dataIsTaken {
                         self.dataIsTaken = true
                         //kfsSelectorRequest(posePixelBuffer: buffer)
+                        self.setSafeState(.arkit(context: context, prev: nil))
                         self.displayKfsFrameSelector(viewModel: HalfRealTimeScene.FrameSelector.ViewModel(posePixelBuffer: buffer))
                     }
 
