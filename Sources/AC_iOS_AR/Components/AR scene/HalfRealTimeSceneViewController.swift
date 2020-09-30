@@ -83,6 +83,7 @@ class HalfRealTimeSceneViewController: UIViewController {
     private var arAnimationDuration: TimeInterval = 1.5
     private let meshNodeName = "MeshNode"
     private var selectNumber:Int = 0
+    private var dataIsTaken: Bool = true
     
     private let noStickersMaxSeconds: Int = 3 //10
     
@@ -715,6 +716,7 @@ extension HalfRealTimeSceneViewController: HalfRealTimeSceneDisplayLogic {
     }
     
     func displayLocalizeData(viewModel: HalfRealTimeScene.LocalizeData.ViewModel) {
+        self.dataIsTaken = false
         print("HalfRealTimeScene.LocalizeData completion saved")
     }
     
@@ -783,7 +785,8 @@ extension HalfRealTimeSceneViewController: ArCameraManagerDelegate {
                     let buffer = PixelBufferWithPose(id: UUID().uuidString, image: frame.capturedImage, cameraPose: frame.camera.transform)
                     _ = context.put(posePixelBuffer: buffer)
                     
-                    if let stopKFS = router?.dataStore?.stopKFS, !stopKFS {
+                    if let stopKFS = router?.dataStore?.stopKFS, !stopKFS, !dataIsTaken {
+                        self.dataIsTaken = true
                         kfsSelectorRequest(posePixelBuffer: buffer)
                     }
 
