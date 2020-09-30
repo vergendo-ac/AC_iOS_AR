@@ -234,6 +234,8 @@ class HalfRealTimeSceneViewController: UIViewController {
         
         guard let viewForAR = self.arBackView else { return }
         
+        //TODO: make self.view frame equals to arBackView.bounds! Perhaps no...
+        
         let isArCameraEnabled = UserDefaults.arCameraEnabled ?? true
         cameraManager = isArCameraEnabled ? ArCameraManager.sharedInstance : YaCameraManager.sharedInstance
         
