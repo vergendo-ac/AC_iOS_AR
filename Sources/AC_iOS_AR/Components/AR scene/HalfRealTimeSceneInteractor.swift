@@ -154,7 +154,7 @@ class HalfRealTimeSceneInteractor: HalfRealTimeSceneDataStore {
     private let localizeAttemptsLimit: Int = 30
     private var localizeIsFirstAttempt: Bool = true
     private var localizeTimer: Timer?
-    private var localizeDataCompletion: ((_ imageData: Data?, _ location: CLLocation?, _ photoInfo: [String:Any]?) -> Void)?
+    private var localizeDataCompletion: ((_ imageData: Data?, _ location: CLLocation?, _ photoInfo: [String:Any]?, _ cameraPose: Pose) -> Void)?
     
     var errorsInARow: Int = 0 {
         didSet {
@@ -1028,7 +1028,7 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
 //        photoInfo["focalLengthIn35mmFilm"] as Int
 //        photoInfo["mirrored"] as Bool
         //localizeDataCompletion: ((_ imageData: Data?, _ location: CLLocation?, _ photoInfo: [String:String]?) -> Void)?
-        self.localizeDataCompletion?(request.image.data, currentLocation, photoInfo)
+        self.localizeDataCompletion?(request.image.data, currentLocation, photoInfo, request.cameraPose)
         
         let response = HalfRealTimeScene.Localize.Response()
         self.presenter?.presentLocalize(response: response)

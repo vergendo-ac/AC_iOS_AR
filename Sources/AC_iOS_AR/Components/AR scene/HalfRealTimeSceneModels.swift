@@ -698,6 +698,7 @@ enum HalfRealTimeScene {
         struct Request {
             let image: ImageModels.Image
             let intrinsics: simd_float3x3
+            let cameraPose: Pose
         }
         
         struct Response {
@@ -724,7 +725,7 @@ enum HalfRealTimeScene {
 
     enum LocalizeData {
         struct Request {
-            let completion: ((_ imageData: Data?, _ location: CLLocation?, _ photoInfo: [String:Any]?) -> Void)?
+            let completion: ((_ imageData: Data?, _ location: CLLocation?, _ photoInfo: [String:Any]?, _ pose: Pose?) -> Void)?
         }
         
         struct Response {

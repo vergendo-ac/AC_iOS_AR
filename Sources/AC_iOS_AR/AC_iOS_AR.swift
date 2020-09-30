@@ -10,7 +10,7 @@ open class AR {
 
     open class Localization {
         
-        public static func getData(completion: @escaping (_ imageData: Data?, _ location: CLLocation?, _ photoInfo: [String:Any]?) -> Void) {
+        public static func getData(completion: @escaping (_ imageData: Data?, _ location: CLLocation?, _ photoInfo: [String:Any]?, _ pose: Pose?) -> Void) {
             AR.controller.getLocalizationData(completion: completion)
         }
         

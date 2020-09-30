@@ -144,7 +144,7 @@ class HalfRealTimeSceneViewController: UIViewController {
         }
     }
     
-    func getLocalizationData(completion: @escaping (_ imageData: Data?, _ location: CLLocation?, _ photoInfo: [String:Any]?) -> Void) {
+    func getLocalizationData(completion: @escaping (_ imageData: Data?, _ location: CLLocation?, _ photoInfo: [String:Any]?, _ pose: Pose?) -> Void) {
         let request = HalfRealTimeScene.LocalizeData.Request(completion: completion)
         interactor?.getLocalizeData(request: request)
     }
@@ -703,8 +703,20 @@ extension HalfRealTimeSceneViewController: HalfRealTimeSceneDisplayLogic {
             let fileName = "\(ImageModels.ImageSource.PhotoCamera.rawValue)1.jpg"
             let imageInfo = ImageModels.Image(data: dataImage, filename: fileName, size: UIImage(data: dataImage)!.size)
             
-            if let arkitView = cameraManager.arKitSceneView, let intrinsics = arkitView.session.currentFrame?.camera.intrinsics {
-                let request = HalfRealTimeScene.Localize.Request(image: imageInfo, intrinsics: intrinsics)
+            if let arkitView = cameraManager.arKitSceneView,
+               let intrinsics = arkitView.session.currentFrame?.camera.intrinsics,
+               let transform = arkitView.session.currentFrame?.camera.transform {
+                
+                let qw = sqrt(1 + transform.columns.0.x + transform.columns.1.y + transform.columns.2.z) / 2.0
+                let qx = (transform.columns.2.y - transform.columns.1.z) / (qw * 4.0)
+                let qy = (transform.columns.0.z - transform.columns.2.x) / (qw * 4.0)
+                let qz = (transform.columns.1.x - transform.columns.0.y) / (qw * 4.0)
+                
+                let orientation = Quaternion(w: qw, x: qx, y: qy, z: qz)
+                let position = Vector3d(x: transform.columns.3.x, y: transform.columns.3.y, z: transform.columns.3.z)
+                let pose = Pose(position: position, orientation: orientation)
+                
+                let request = HalfRealTimeScene.Localize.Request(image: imageInfo, intrinsics: intrinsics, cameraPose: pose)
                 self.interactor?.localize(request: request)
             }
             
