@@ -404,8 +404,10 @@ class HalfRealTimeSceneViewController: UIViewController {
             return
         }
         
-        let request = HalfRealTimeScene.FrameSelector.Request(posePixelBuffer: posePixelBuffer)
-        self.interactor?.kfsFrameSelector(request: request)
+        DispatchQueue.main.async {
+            let request = HalfRealTimeScene.FrameSelector.Request(posePixelBuffer: posePixelBuffer)
+            self.interactor?.kfsFrameSelector(request: request)
+        }
     }
 
 }

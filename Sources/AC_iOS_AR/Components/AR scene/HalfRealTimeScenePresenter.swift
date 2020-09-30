@@ -298,13 +298,15 @@ class HalfRealTimeScenePresenter: HalfRealTimeScenePresentationLogic {
     func presentKfsFrameSelector(response: HalfRealTimeScene.FrameSelector.Response) {
         let viewModel = HalfRealTimeScene.FrameSelector.ViewModel(posePixelBuffer: response.posePixelBuffer)
         
-        if Thread.isMainThread {
+        /*if Thread.isMainThread {
             DispatchQueue.global().async { [weak self] in
                 self?.viewController?.displayKfsFrameSelector(viewModel: viewModel)
             }
         } else {
             viewController?.displayKfsFrameSelector(viewModel: viewModel)
-        }
+        }*/
+        
+        self?.viewController?.displayKfsFrameSelector(viewModel: viewModel)
     }
     
     func presentLocalizeData(response: HalfRealTimeScene.LocalizeData.Response) {
