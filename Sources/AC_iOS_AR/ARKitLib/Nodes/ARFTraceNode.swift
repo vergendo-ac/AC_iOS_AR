@@ -14,8 +14,8 @@ class ARFTraceNode {
     var node: SCNNode!
     
     init(name: String, radius: Float = 0.2) {
-        let tempScene = SCNScene(named: "Sources/AC_iOS_AR/ARKitLib/Objects/art.scnassets/tiger_paw/tiger_paw_footprint.scn")!
-        self.node = tempScene.rootNode
+        let tempScene = SCNScene(named: "Sources/AC_iOS_AR/ARKitLib/Objects/art.scnassets/tiger_paw/tiger_paw_footprint.scn")
+        self.node = tempScene?.rootNode
         self.node.name = name
         print(self.node.childNodes)
         print(self.node.childNodes.count)
