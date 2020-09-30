@@ -34,7 +34,7 @@ class ArTraceManager: ArManager {
     override init() {
         super.init()
         self.arTracesEnabled = UserDefaults.arTraces ?? false
-        traceScene = SCNScene(named: "art.scnassets/tiger_paw/tiger_paw_footprint.obj")!
+        traceScene = SCNScene(named: "Sources/AC_iOS_AR/ARKitLib/Objects/art.scnassets/tiger_paw/tiger_paw_footprint.scn")!
         arkitView?.scene.lightingEnvironment.contents = traceScene.lightingEnvironment.contents
     }
     
