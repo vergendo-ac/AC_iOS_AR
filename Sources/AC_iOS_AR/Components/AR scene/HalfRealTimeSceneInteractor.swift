@@ -1015,11 +1015,6 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
         
         self.stopKFS = true
 
-        guard let imageData = request.image.data, let location = currentLocation else {
-            self.localizeDataCompletion?(nil, nil, nil)
-            return
-        }
-        
         self.currentImage = request.image
         
         var photoInfo: [String: Any] = [:]
@@ -1033,7 +1028,7 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
 //        photoInfo["focalLengthIn35mmFilm"] as Int
 //        photoInfo["mirrored"] as Bool
         //localizeDataCompletion: ((_ imageData: Data?, _ location: CLLocation?, _ photoInfo: [String:String]?) -> Void)?
-        self.localizeDataCompletion?(imageData, location, photoInfo)
+        self.localizeDataCompletion?(request.image.data, currentLocation, photoInfo)
         
         let response = HalfRealTimeScene.Localize.Response()
         self.presenter?.presentLocalize(response: response)
