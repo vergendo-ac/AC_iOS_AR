@@ -164,7 +164,7 @@ class HalfRealTimeSceneWorker {
             let str = String(decoding: asset.data, as: UTF8.self) as String?,
             let realJSON: JSON = JSON(parseJSON: str) as JSON? {
             let statusData = NetModels.StatusData(statusType: .GotDataFromServer)
-            Sticker.sharedInstance.parse2D(json: realJSON, statusData: statusData, completion: completion)
+            StickerService.sharedInstance.parse2D(json: realJSON, statusData: statusData, completion: completion)
         }
     }
 }

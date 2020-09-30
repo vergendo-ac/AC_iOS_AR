@@ -24,7 +24,7 @@ class Scene3D: ARFNode {
     private let syncRoot: NSRecursiveLock = NSRecursiveLock()
     static var anchorId: Int = 0
     
-    let sticker: Sticker = Sticker.sharedInstance
+    let sticker: StickerService = StickerService.sharedInstance
     
     private var allNodes: [SCNNode] = []
     private var arkitView: ARSCNView?

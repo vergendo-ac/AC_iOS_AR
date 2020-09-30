@@ -11,9 +11,9 @@ import Foundation
 public struct ARObject: Codable {
 
     public var placeholder: Placeholder
-    public var sticker: [String:String]
+    public var sticker: Sticker
 
-    public init(placeholder: Placeholder, sticker: [String:String]) {
+    public init(placeholder: Placeholder, sticker: Sticker) {
         self.placeholder = placeholder
         self.sticker = sticker
     }

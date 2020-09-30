@@ -10,12 +10,10 @@ import Foundation
 
 public struct InlineObject: Codable {
 
-    public var description: ImageDescription
-    /** A JPEG-encoded image */
-    public var image: URL
+    /** A JPEG-encoded image, must include GPS data in EXIF tags */
+    public var image: URL?
 
-    public init(description: ImageDescription, image: URL) {
-        self.description = description
+    public init(image: URL? = nil) {
         self.image = image
     }
 

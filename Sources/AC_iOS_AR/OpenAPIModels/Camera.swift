@@ -11,9 +11,11 @@ import Foundation
 public struct Camera: Codable {
 
     public var pose: Pose
+    public var intrinsics: CameraIntrinsics?
 
-    public init(pose: Pose) {
+    public init(pose: Pose, intrinsics: CameraIntrinsics? = nil) {
         self.pose = pose
+        self.intrinsics = intrinsics
     }
 
 }

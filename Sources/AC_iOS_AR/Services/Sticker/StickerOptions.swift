@@ -48,6 +48,7 @@ public class StickerOptions {
         case StickerID = "sticker_id"
         case StickerType = "sticker_type"
         case StickerDetailedType = "sticker_detailed_type"
+        case StickerSubType = "sticker_subtype"
     }
     private enum ru: String, CaseIterable {
         case Rating = "Рейтинг"
@@ -64,7 +65,7 @@ public class StickerOptions {
         case StickerID = "Стикер ИН"
         case StickerType = "Тип стикера"
         case StickerDetailedType = "Подробный тип стикера"
-        
+        case StickerSubType = "Подтип стикера"
     }
     private enum en: String, CaseIterable {
         case Rating = "Rating"
@@ -81,6 +82,8 @@ public class StickerOptions {
         case StickerID = "Sticker ID"
         case StickerType = "Sticker Type"
         case StickerDetailedType = "Sticker Detailed Type"
+        case StickerSubType = "Sticker subtype"
+
     }
     public static var allOptionsKeys: [String] = {
         print(StickerOptions.ru.allCases)
@@ -220,7 +223,15 @@ public class StickerOptions {
         }
     }()
 
-    
+    public static var stickerSubType: String = {
+        switch Languages.currentLanguage {
+        case .ru:
+            return ru.StickerSubType.rawValue
+        case .en:
+            return en.StickerSubType.rawValue
+        }
+    }()
+
     public func parse(subJson: JSON) -> [String:String] {
         let rating: String? = subJson["sticker"][StickerOptions.jsonName.Rating.rawValue].string
         let priceCategory: String? = subJson["sticker"][StickerOptions.jsonName.PriceCategory.rawValue].string
@@ -241,7 +252,8 @@ public class StickerOptions {
         let stickerIDString: String? = subJson["sticker"][StickerOptions.jsonName.StickerID.rawValue].string
         let stickerTypeString: String? = subJson["sticker"][StickerOptions.jsonName.StickerType.rawValue].string
         let stickerDetailTypeString: String? = subJson["sticker"][StickerOptions.jsonName.StickerDetailedType.rawValue].string
-        
+        let stickerSubTypeString: String? = subJson["sticker"][StickerOptions.jsonName.StickerSubType.rawValue].string
+
 
         //["Рейтинг", "Ценовая категория", "Кухня", "Сайт", "Номер телефона", "Адрес", "Количество отзывов", "Крайний отзыв"]
         var stickerOptions: [String: String] = [:]
@@ -259,6 +271,7 @@ public class StickerOptions {
         if let sID = stickerIDString, sID.count > 0 { stickerOptions[StickerOptions.stickerID] = sID }
         if let sTp = stickerTypeString, sTp.count > 0 { stickerOptions[StickerOptions.stickerType] = sTp }
         if let sDTp = stickerDetailTypeString, sDTp.count > 0 { stickerOptions[StickerOptions.stickerDetailedType] = sDTp }
+        if let sSTp = stickerSubTypeString, sSTp.count > 0 { stickerOptions[StickerOptions.stickerSubType] = sSTp }
 
         return stickerOptions
     }
@@ -283,6 +296,8 @@ public class StickerOptions {
         let stickerIDString = options[StickerOptions.jsonName.StickerID.rawValue]
         let stickerTypeString = options[StickerOptions.jsonName.StickerType.rawValue]
         let stickerDetailTypeString = options[StickerOptions.jsonName.StickerDetailedType.rawValue]
+        let stickerSubTypeString: String? = options[StickerOptions.jsonName.StickerSubType.rawValue]
+
 
         //["Рейтинг", "Ценовая категория", "Кухня", "Сайт", "Номер телефона", "Адрес", "Количество отзывов", "Крайний отзыв"]
         var stickerOptions: [String: String] = [:]
@@ -300,6 +315,25 @@ public class StickerOptions {
         if let sID = stickerIDString, sID.count > 0 { stickerOptions[StickerOptions.stickerID] = sID }
         if let sTp = stickerTypeString, sTp.count > 0 { stickerOptions[StickerOptions.stickerType] = sTp }
         if let sDTp = stickerDetailTypeString, sDTp.count > 0 { stickerOptions[StickerOptions.stickerDetailedType] = sDTp }
+        if let sSTp = stickerSubTypeString, sSTp.count > 0 { stickerOptions[StickerOptions.stickerSubType] = sSTp }
+
+        return stickerOptions
+    }
+    
+    public func parse(sticker: Sticker) -> [String: String] {
+
+        let stickerIDString = sticker.stickerId
+        let stickerText = sticker.stickerText
+        let stickerTypeString = sticker.stickerType
+        let stickerSubTypeString = sticker.stickerSubtype
+        let pathString = sticker.path
+
+        var stickerOptions: [String: String] = [:]
+        if stickerText.count > 0 { stickerOptions[StickerOptions.title] = stickerText }
+        if pathString.count > 0 { stickerOptions[StickerOptions.path] = fixHttp(pathString) }
+        if stickerIDString.count > 0 { stickerOptions[StickerOptions.stickerID] = stickerIDString }
+        if stickerTypeString.count > 0 { stickerOptions[StickerOptions.stickerType] = stickerTypeString }
+        if let sSTp = stickerSubTypeString, sSTp.count > 0 { stickerOptions[StickerOptions.stickerSubType] = sSTp }
 
         return stickerOptions
     }

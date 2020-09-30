@@ -358,7 +358,7 @@ class HalfRealTimeScenePresenter: HalfRealTimeScenePresentationLogic {
         
         let nodes = placeholders.map { Node3D.create(from: $0) }
         let serverCamera = ServerCamera.create(from: pose)
-        let objectsInfo = objects.map { StickerModels.StickerData(id: $0.placeholder.placeholderId.hashValue, options: StickerOptions.sharedInstance.parse(options: $0.sticker)) }
+        let objectsInfo = objects.map { StickerModels.StickerData(id: $0.placeholder.placeholderId.hashValue, options: StickerOptions.sharedInstance.parse(sticker: $0.sticker)) }
         
         errorsInRow = 0
         setRestartArSessionState(nil)

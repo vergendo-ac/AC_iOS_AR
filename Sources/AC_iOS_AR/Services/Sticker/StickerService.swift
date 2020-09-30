@@ -9,9 +9,9 @@
 import SwiftyJSON
 import ARKit
 
-class Sticker {
+class StickerService {
     
-    static let sharedInstance = Sticker()
+    static let sharedInstance = StickerService()
     let serverMessage: ServerMessage = ServerMessage.sharedInstance
     
     //MARK: API SYNC
