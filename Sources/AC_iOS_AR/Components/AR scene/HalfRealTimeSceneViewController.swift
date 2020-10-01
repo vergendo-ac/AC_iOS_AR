@@ -309,7 +309,7 @@ class HalfRealTimeSceneViewController: UIViewController {
         }
     }
     
-    func takePhoto(completion: @escaping (Data?, AlertMessage?, UIDeviceOrientation?) -> Void) {
+    func takePhoto(completion: @escaping (Data?, NSError?, UIDeviceOrientation?) -> Void) {
         let request = HalfRealTimeScene.TakeNextPhoto.Request(completion: completion)
         self.interactor?.takeNextPhoto(request: request)
     }

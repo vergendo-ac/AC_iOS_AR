@@ -265,13 +265,13 @@ enum HalfRealTimeScene {
     
     enum TakeNextPhoto {
         struct Request {
-            let completion: ((Data?, AlertMessage?, UIDeviceOrientation?) -> Void)?
+            let completion: ((Data?, NSError?, UIDeviceOrientation?) -> Void)?
         }
         struct Response {
-            let completion: ((Data?, AlertMessage?, UIDeviceOrientation?) -> Void)?
+            let completion: ((Data?, NSError?, UIDeviceOrientation?) -> Void)?
         }
         struct ViewModel {
-            let completion: ((Data?, AlertMessage?, UIDeviceOrientation?) -> Void)?
+            let completion: ((Data?, NSError?, UIDeviceOrientation?) -> Void)?
         }
     }
     

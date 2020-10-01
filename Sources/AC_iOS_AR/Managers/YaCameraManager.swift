@@ -22,7 +22,7 @@ protocol BaseCameraManagerProtocol: class {
     func shouldUseLocationServices(isUseGPS: Bool)
     func refreshSettings()
     
-    func takePhoto(completion: @escaping (Data?, AlertMessage?, UIDeviceOrientation?) -> Swift.Void)
+    func takePhoto(completion: @escaping (Data?, NSError?, UIDeviceOrientation?) -> Swift.Void)
     func stopCaptureSession()
     func resumeCaptureSession(completion: @escaping (CGSize) -> Void)
     func addMetaData(maybeData: Data?, maybeExifDeviceOrientation: Int?) -> Data?
@@ -119,8 +119,8 @@ class YaCameraManager: BaseCameraManagerProtocol {
         }
     }
     
-    func takePhoto(completion: @escaping (Data?, AlertMessage?, UIDeviceOrientation?) -> Swift.Void) {
-        var alert: AlertMessage?
+    func takePhoto(completion: @escaping (Data?, NSError?, UIDeviceOrientation?) -> Swift.Void) {
+        var nserror: NSError?
         
         if let cameraIsReady = cameraManager?.cameraIsReady, cameraIsReady {
             cameraManager?.capturePictureDataWithCompletion({ [weak self] (captureResult) in
@@ -130,20 +130,20 @@ class YaCameraManager: BaseCameraManagerProtocol {
                 let deviceOrientation = self.motionManager?.deviceOrientation()
                 let locationError = self.locationManager?.latestError
                 
-                alert = (locationError == nil) ? nil : AlertMessage(title: "Location error", message: locationError!.localizedDescription)
+                nserror = (locationError == nil) ? nil : NSError(domain: "com.unit.ar.error", code: 0, userInfo: [NSLocalizedDescriptionKey: "Location error \(locationError!.localizedDescription)."])
                 
                 switch captureResult {
                 case let .success(content):
-                    completion(self.addMetaData(maybeData: content.asData, maybeExifDeviceOrientation: UIDevice.current.exifOrientation()), alert, deviceOrientation)
+                    completion(self.addMetaData(maybeData: content.asData, maybeExifDeviceOrientation: UIDevice.current.exifOrientation()), nserror, deviceOrientation)
                 case let .failure(error):
-                    alert = AlertMessage(title: "Take photo error", message: error.localizedDescription)
-                    completion(nil, alert, deviceOrientation)
+                    nserror = NSError(domain: "com.unit.ar.error", code: 0, userInfo: [NSLocalizedDescriptionKey: "Take photo error \(error.localizedDescription)."])
+                    completion(nil, nserror, deviceOrientation)
                 }
                 
             })
         } else {
-            alert = AlertMessage(title: "Photo camera", message: "Isn't ready yet.")
-            completion(nil, alert, nil)
+            nserror = NSError(domain: "com.unit.ar.error", code: 0, userInfo: [NSLocalizedDescriptionKey: "Photo camera isn't ready yet."])
+            completion(nil, nserror, nil)
         }
         
     }

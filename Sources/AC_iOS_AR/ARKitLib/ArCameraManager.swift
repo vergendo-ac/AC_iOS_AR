@@ -172,7 +172,7 @@ class ArCameraManager: NSObject, BaseCameraManagerProtocol {
         fatalError("Cannot add framing for AV.")
     }
     
-    func takePhoto(completion: @escaping (Data?, AlertMessage?, UIDeviceOrientation?) -> ()) {
+    func takePhoto(completion: @escaping (Data?, NSError?, UIDeviceOrientation?) -> ()) {
         if let img = self.snapshot() {
             let imageData = img.jpegData(compressionQuality: 1.0)!
             let image = UIImage(data: imageData)!
@@ -180,8 +180,8 @@ class ArCameraManager: NSObject, BaseCameraManagerProtocol {
             let newImageDataGPS = addMetaData(maybeData: newImageData)
             completion(newImageDataGPS, nil, deviceOrientation)
         } else {
-            let alert: AlertMessage = AlertMessage(title: "AR-camera", message: "Isn't ready yet.")
-            completion(nil, alert, nil)
+            let error = NSError(domain: "com.unit.error", code: 2, userInfo: [NSLocalizedDescriptionKey: "AR-camera isn't ready yet."])
+            completion(nil, error, nil)
         }
     }
     
