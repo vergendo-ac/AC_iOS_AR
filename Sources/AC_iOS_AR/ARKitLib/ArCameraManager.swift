@@ -150,7 +150,7 @@ class ArCameraManager: NSObject, BaseCameraManagerProtocol {
         arKitSceneView = ARSCNView(frame: self.view.bounds)
         arKitSceneView?.isUserInteractionEnabled = true
         print("[arcamera] view bounds:\(self.view.bounds)")
-        let scene = SCNScene(named: "art.scnassets/main.scn")!
+        let scene = SCNScene(named: "art.scnassets/main.scn")
         
         // Set the scene to the view
         arKitSceneView?.scene = scene
