@@ -309,7 +309,7 @@ class HalfRealTimeSceneViewController: UIViewController {
         }
     }
     
-    private func takePhoto(completion: @escaping (Data?, AlertMessage?, UIDeviceOrientation?) -> Void) {
+    func takePhoto(completion: @escaping (Data?, AlertMessage?, UIDeviceOrientation?) -> Void) {
         let request = HalfRealTimeScene.TakeNextPhoto.Request(completion: completion)
         self.interactor?.takeNextPhoto(request: request)
     }
@@ -726,7 +726,9 @@ extension HalfRealTimeSceneViewController: HalfRealTimeSceneDisplayLogic {
     }
     
     func displayTakeNextPhoto(viewModel: HalfRealTimeScene.TakeNextPhoto.ViewModel) {
-        //viewModel.completion?()
+        self.cameraManager?.takePhoto(completion: { (mData, mAlert, mDeviceOrientation) in
+            viewModel.completion?(mData, mAlert, mDeviceOrientation)
+        })
     }
     
     func displayLocalizeData(viewModel: HalfRealTimeScene.LocalizeData.ViewModel) {

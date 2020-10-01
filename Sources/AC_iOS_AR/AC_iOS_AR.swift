@@ -34,6 +34,10 @@ open class AR {
             guard let localizationResult = try? JSONDecoder().decode(LocalizationResult.self, from: localizationData) else { return }
             AR.controller.show(localizationResult: localizationResult)
         }
+        
+        public static func takePhoto(completion: @escaping (Data?, AlertMessage?, UIDeviceOrientation?) -> Void) {
+            AR.controller.takePhoto(completion: completion)
+        }
 
     }
 
