@@ -261,7 +261,7 @@ class ArCameraContext {
     }
     
     private func calculateABTransform(cameraTransform: double4x4, updateScale: Bool) -> double4x4? {
-        guard let scene = scenes.last, cameraPoses.count == scenes.count else {
+        guard let scene = scenes.last/*, cameraPoses.count == scenes.count*/ else {
             return nil
         }
         
