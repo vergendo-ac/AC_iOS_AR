@@ -297,7 +297,7 @@ class ArCameraContext {
     }
 
     func showLastScene(updateScale: Bool, isEnabled: Bool, animated: Bool = true, beforeAnimation: (() -> ())? = nil, completion: @escaping (Bool) -> ()) {
-        if let arkitView = arkitView, let scene = scenes.last, cameraPoses.count == scenes.count {
+        if let arkitView = arkitView, let scene = scenes.last/*, cameraPoses.count == scenes.count*/ {
             currentScene = nil
             anchorNode = nil
             mainNode = nil
