@@ -439,11 +439,11 @@ extension HalfRealTimeSceneViewController: HalfRealTimeSceneDisplayLogic {
             switch prev {
             case .arkit(let context, _):
                 
-                guard context.cameraPoses.count == context.scenes.count + 1 else {
+                /*guard context.cameraPoses.count == context.scenes.count + 1 else {
                     self.setSafeState(.arkit(context: context, prev: nil))
                     self.sticker3DRequest()
                     return
-                }
+                }*/
                 
                 self.interactor?.clearArContent(request: HalfRealTimeScene.ClearArContent.Request(cameraManager: cameraManager, clearAnchors: false))
                 
