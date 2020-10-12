@@ -241,7 +241,7 @@ class HalfRealTimeSceneViewController: UIViewController {
         cameraManager = isArCameraEnabled ? ArCameraManager.sharedInstance : YaCameraManager.sharedInstance
         
         if isArCameraEnabled {
-            if let cm = (cameraManager as? ArCameraManager), cm.view == nil {
+            if let cm = (cameraManager as? ArCameraManager)/*, cm.view == nil*/ {
                 cm.addPreviewLayer(to: viewForAR)
             }
             restoreArCameraManager()
