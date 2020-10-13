@@ -16,6 +16,10 @@ import ARKit
 
 typealias StickerViewDistance = (sticker: StickerSceneView, distance: Double)
 
+public protocol StickerDelegate {
+    func tapped(stickerID: Int, stickerData: StickerModels.StickerData?)
+}
+
 protocol HalfRealTimeSceneBusinessLogic {
     
     func savePhoto(request: HalfRealTimeScene.SavePhoto.Request)
@@ -58,7 +62,9 @@ protocol HalfRealTimeSceneBusinessLogic {
     
     func getLocalizeData(request: HalfRealTimeScene.LocalizeData.Request)
     func showARObjects(request: HalfRealTimeScene.ARObjects.Request)
-
+    
+    func setDelegate(request: HalfRealTimeScene.Delegate.Request)
+    func delete(request: HalfRealTimeScene.Delete.Request)
 }
 
 protocol HalfRealTimeSceneDataStore {
@@ -131,6 +137,7 @@ class HalfRealTimeSceneInteractor: HalfRealTimeSceneDataStore {
     private var rightPointsNum: Int?
     
     private var stickersShown: Bool = false
+    private var stickerDelegate: StickerDelegate?
     
     private var arTraceManager = ArTraceManager.sharedInstance
     private var arCreatureManager = ArCreatureManager.sharedInstance
@@ -238,7 +245,9 @@ class HalfRealTimeSceneInteractor: HalfRealTimeSceneDataStore {
                   stickerData: stickerNode.stickerData,
                   hideStickerMarker: hideStickerMarker,
                   pinView: pinView ?? PassthroughView(),
-                  stickerMarkerViewCompletion: { _,_ in }
+                  stickerMarkerViewCompletion: { [weak self] (id, data) in
+                    self?.stickerDelegate?.tapped(stickerID: id, stickerData: data)
+                  }
                 )
                 acc[stickerNode.id]?.isHidden = true
             })
@@ -1046,6 +1055,22 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
     func showARObjects(request: HalfRealTimeScene.ARObjects.Request) {
         let response = HalfRealTimeScene.ARObjects.Response(localizationResult: request.localizationResult)
         self.presenter?.presentARObjects(response: response)
+    }
+    
+    func setDelegate(request: HalfRealTimeScene.Delegate.Request) {
+        self.stickerDelegate = request.stickerDelegate
+
+        let response = HalfRealTimeScene.Delegate.Response()
+        self.presenter?.presentDelegate(response: response)
+    }
+    
+    func delete(request: HalfRealTimeScene.Delete.Request) {
+        self.stickers?[request.stickerID] = nil
+        self.stickerSceneViews[request.stickerID] = nil
+        self.stickerMarkerFrameViews?[request.stickerID] = nil
+        
+        let response = HalfRealTimeScene.Delete.Response()
+        self.presenter?.presentDelete(response: response)
     }
 
 }

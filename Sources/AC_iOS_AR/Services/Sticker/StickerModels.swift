@@ -10,14 +10,14 @@ import Foundation
 import CoreGraphics
 import ARKit
 
-enum StickerModels {
+public enum StickerModels {
     
     struct StickerShort {
         let urlPath: URL?
         let text: String?
     }
     
-    struct StickerData {
+    public struct StickerData {
         let id: Int?
         let options: [String: String]
     }

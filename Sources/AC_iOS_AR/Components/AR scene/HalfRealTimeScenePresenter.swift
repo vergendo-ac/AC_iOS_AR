@@ -35,6 +35,9 @@ protocol HalfRealTimeScenePresentationLogic {
     
     func presentLocalizeData(response: HalfRealTimeScene.LocalizeData.Response)
     func presentARObjects(response: HalfRealTimeScene.ARObjects.Response)
+
+    func presentDelegate(response: HalfRealTimeScene.Delegate.Response)
+    func presentDelete(response: HalfRealTimeScene.Delete.Response)
 }
 
 class HalfRealTimeScenePresenter: HalfRealTimeScenePresentationLogic {
@@ -367,6 +370,16 @@ class HalfRealTimeScenePresenter: HalfRealTimeScenePresentationLogic {
         let viewModel = HalfRealTimeScene.GetStickers3D.ViewModel(scene: scene)
         self.viewController?.displayStickers3D(viewModel: viewModel)
 
+    }
+    
+    func presentDelegate(response: HalfRealTimeScene.Delegate.Response) {
+        let viewModel = HalfRealTimeScene.Delegate.ViewModel()
+        self.viewController?.displayDelegate(viewModel: viewModel)
+    }
+    
+    func presentDelete(response: HalfRealTimeScene.Delete.Response) {
+        let viewModel = HalfRealTimeScene.Delete.ViewModel()
+        self.viewController?.displayDelete(viewModel: viewModel)
     }
     
 }

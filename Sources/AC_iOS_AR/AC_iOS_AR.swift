@@ -18,8 +18,8 @@ open class AR {
 
     open class Session {
         
-        public static func set(arView backView: UIView) {
-            AR.controller.set(arView: backView)
+        public static func set(arView backView: UIView, stickerDelegate: StickerDelegate? = nil) {
+            AR.controller.set(arView: backView, stickerDelegate: stickerDelegate)
         }
         
         public static func startAR() {
@@ -39,6 +39,12 @@ open class AR {
             AR.controller.takePhoto(completion: completion)
         }
 
+    }
+    
+    open class Sticker {
+        public static func delete(stickerID: Int) {
+            AR.controller.delete(by: stickerID)
+        }
     }
 
 }

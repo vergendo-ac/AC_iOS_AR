@@ -734,5 +734,29 @@ enum HalfRealTimeScene {
         struct ViewModel {
         }
     }
+    
+    enum Delegate {
+        struct Request {
+            let stickerDelegate: StickerDelegate?
+        }
+        
+        struct Response {
+        }
+        
+        struct ViewModel {
+        }
+    }
+    
+    enum Delete {
+        struct Request {
+            let stickerID: Int
+        }
+        
+        struct Response {
+        }
+        
+        struct ViewModel {
+        }
+    }
 
 }

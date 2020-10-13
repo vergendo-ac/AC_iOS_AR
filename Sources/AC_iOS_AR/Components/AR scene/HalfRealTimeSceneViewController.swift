@@ -35,6 +35,8 @@ protocol HalfRealTimeSceneDisplayLogic: class {
     func displayLocalize(viewModel:  HalfRealTimeScene.Localize.ViewModel)
     func displayARObjects(viewModel:  HalfRealTimeScene.ARObjects.ViewModel)
     
+    func displayDelegate(viewModel:  HalfRealTimeScene.Delegate.ViewModel)
+    func displayDelete(viewModel:  HalfRealTimeScene.Delete.ViewModel)
 }
 
 class HalfRealTimeSceneViewController: UIViewController {
@@ -126,8 +128,10 @@ class HalfRealTimeSceneViewController: UIViewController {
         interactor?.start(request: startRequest)
     }
     
-    func set(arView backView: UIView) {
+    func set(arView backView: UIView, stickerDelegate: StickerDelegate?) {
         self.arBackView = backView
+        let request = HalfRealTimeScene.Delegate.Request(stickerDelegate: stickerDelegate)
+        interactor?.setDelegate(request: request)
     }
     
     private func startAR() {
@@ -152,6 +156,11 @@ class HalfRealTimeSceneViewController: UIViewController {
     func show(localizationResult: LocalizationResult) {
         let request = HalfRealTimeScene.ARObjects.Request(localizationResult: localizationResult)
         interactor?.showARObjects(request: request)
+    }
+    
+    func delete(by stickerID: Int) {
+        let request = HalfRealTimeScene.Delete.Request(stickerID: stickerID)
+        interactor?.delete(request: request)
     }
 
     
@@ -742,6 +751,14 @@ extension HalfRealTimeSceneViewController: HalfRealTimeSceneDisplayLogic {
     
     func displayARObjects(viewModel:  HalfRealTimeScene.ARObjects.ViewModel) {
         print("HalfRealTimeScene.ARObjects finished")
+    }
+    
+    func displayDelegate(viewModel:  HalfRealTimeScene.Delegate.ViewModel) {
+        print("HalfRealTimeScene.Delegate.ViewModel")
+    }
+    
+    func displayDelete(viewModel:  HalfRealTimeScene.Delete.ViewModel) {
+        print("HalfRealTimeScene.Delete.ViewModel")
     }
     
 }
