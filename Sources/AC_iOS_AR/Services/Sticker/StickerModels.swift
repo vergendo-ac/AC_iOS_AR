@@ -18,8 +18,8 @@ public enum StickerModels {
     }
     
     public struct StickerData {
-        let id: Int?
-        let options: [String: String]
+        public let id: Int?
+        public let options: [String: String]
     }
     
     struct Node {
