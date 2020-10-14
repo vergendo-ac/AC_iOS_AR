@@ -1069,6 +1069,8 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
         self.stickerSceneViews[request.stickerID] = nil
         self.stickerMarkerFrameViews?[request.stickerID] = nil
         
+        showStickerNodes()
+        
         let response = HalfRealTimeScene.Delete.Response()
         self.presenter?.presentDelete(response: response)
     }
