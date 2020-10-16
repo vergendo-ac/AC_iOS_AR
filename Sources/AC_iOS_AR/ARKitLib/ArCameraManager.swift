@@ -211,16 +211,22 @@ class ArCameraManager: NSObject, BaseCameraManagerProtocol {
     
     func resumeCaptureSession(completion: @escaping (CGSize) -> Void) {
         clear()
-        let configuration = createARConfiguration()
-        arKitSceneView?.session.run(configuration, options: [])
-        arKitSceneView?.delegate = self
-        completion(configuration.videoFormat.imageResolution)
+        if let configuration = createARConfiguration()
+            arKitSceneView?.session.run(configuration, options: [])
+            arKitSceneView?.delegate = self
+            completion(configuration.videoFormat.imageResolution)
+        } else {
+            print("Sorry! you don't have ARKIT support in your device")
+        }
     }
     
     func runArkitSession(options: ARSession.RunOptions = []) {
-        let configuration = createARConfiguration()
-        arKitSceneView?.session.run(configuration, options: options)
-        arKitSceneView?.delegate = self
+        if let configuration = createARConfiguration()
+            arKitSceneView?.session.run(configuration, options: options)
+            arKitSceneView?.delegate = self
+        } else {
+            print("Sorry! you don't have ARKIT support in your device")
+        }
     }
     
     func shouldUseLocationServices(isUseGPS: Bool) {
@@ -272,17 +278,26 @@ class ArCameraManager: NSObject, BaseCameraManagerProtocol {
 
 extension ArCameraManager {
     
-    private func createARConfiguration() -> ARConfiguration {
-        let config = ARConfiguration.makeBaseConfiguration()
-        config.worldAlignment = self.worldAlignment
-        return config
+    private func createARConfiguration() -> ARConfiguration? {
+        if (ARConfiguration.isSupported) {
+            let config = ARConfiguration.makeBaseConfiguration()
+            config.worldAlignment = self.worldAlignment
+            return config
+        } else {
+            print("Sorry! you don't have ARKIT support in your device")
+            return nil
+        }
     }
     
     func setRefererenceImages(_ detectionImages: Set<ARReferenceImage>, options: ARSession.RunOptions = []) {
         clearDebugInfo()
-        let config = createARConfiguration()
-        (config as? ARWorldTrackingConfiguration)?.detectionImages = detectionImages
-        arKitSceneView?.session.run(config, options: options)
+        if let config = createARConfiguration() {
+            (config as? ARWorldTrackingConfiguration)?.detectionImages = detectionImages
+            arKitSceneView?.session.run(config, options: options)
+        } else {
+            print("Sorry! you don't have ARKIT support in your device")
+            return nil
+        }
     }
     
     fileprivate func snapshot() -> UIImage? {
