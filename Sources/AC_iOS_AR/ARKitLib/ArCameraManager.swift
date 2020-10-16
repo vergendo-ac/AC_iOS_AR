@@ -211,7 +211,7 @@ class ArCameraManager: NSObject, BaseCameraManagerProtocol {
     
     func resumeCaptureSession(completion: @escaping (CGSize) -> Void) {
         clear()
-        if let configuration = createARConfiguration()
+        if let configuration = createARConfiguration() {
             arKitSceneView?.session.run(configuration, options: [])
             arKitSceneView?.delegate = self
             completion(configuration.videoFormat.imageResolution)
@@ -221,7 +221,7 @@ class ArCameraManager: NSObject, BaseCameraManagerProtocol {
     }
     
     func runArkitSession(options: ARSession.RunOptions = []) {
-        if let configuration = createARConfiguration()
+        if let configuration = createARConfiguration() {
             arKitSceneView?.session.run(configuration, options: options)
             arKitSceneView?.delegate = self
         } else {
@@ -296,7 +296,6 @@ extension ArCameraManager {
             arKitSceneView?.session.run(config, options: options)
         } else {
             print("Sorry! you don't have ARKIT support in your device")
-            return nil
         }
     }
     
