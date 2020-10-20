@@ -18,6 +18,7 @@ typealias StickerViewDistance = (sticker: StickerSceneView, distance: Double)
 
 public protocol StickerDelegate {
     func tapped(stickerID: Int, stickerData: StickerModels.StickerData?)
+    func update(stickers: [StickerModels.StickerData])
 }
 
 protocol HalfRealTimeSceneBusinessLogic {
@@ -200,6 +201,8 @@ class HalfRealTimeSceneInteractor: HalfRealTimeSceneDataStore {
         if let imageSize = self.currentImage?.size, let nodes = maybeNodes, let stickers = maybeStickers, nodes.count == stickers.count,
             let triplePoints = self.worker?.calcNodesTriplePoints(maybeNodes: nodes, imageSize: imageSize, windowSize: self.pinView?.frame.size ?? self.windowSize, maybeDeviceOrientation: self.currentDeviceOrientation),
             let framePoints = triplePoints.framePoints {
+            
+            stickerDelegate?.update(stickers: stickers)
             
             //save all stickers as key-value pairs
             self.stickers = (stickers.reduce(into: (-1, [:]), { (acc, sticker) in
