@@ -665,7 +665,7 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
         }
         
         //MARK: do clusters here
-        self.makeClusters(stickers: stickerItems.filter { $0.0.viewType == .sticker }.map{ $0.0 })
+        //self.makeClusters(stickers: stickerItems.filter { $0.0.viewType == .sticker }.map{ $0.0 })
         
         DispatchQueue.main.async {
             let _ =  self.worker?.alignStickers(views: stickerItems.filter { $0.0.viewType == .sticker }.map{ $0.0 }, pinViewSize: self.pinView?.frame.size ?? self.windowSize)
