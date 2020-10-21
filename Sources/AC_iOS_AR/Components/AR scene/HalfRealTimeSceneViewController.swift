@@ -443,6 +443,11 @@ extension HalfRealTimeSceneViewController: HalfRealTimeSceneDisplayLogic {
         
         let scene = viewModel.scene
         
+        if self.cameraState.isArkit {
+            let prev = self.cameraState
+            self.cameraState = .preparing(prev: prev)
+        }
+        
         switch self.cameraState {
         case .preparing(let prev, _):
             switch prev {
