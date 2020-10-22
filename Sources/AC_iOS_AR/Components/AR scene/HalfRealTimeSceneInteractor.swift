@@ -19,6 +19,7 @@ typealias StickerViewDistance = (sticker: StickerSceneView, distance: Double)
 public protocol StickerDelegate {
     func tapped(stickerID: Int, stickerData: StickerModels.StickerData?)
     func update(stickers: [StickerModels.StickerData])
+    func wrongLocalization()
 }
 
 protocol HalfRealTimeSceneBusinessLogic {
@@ -1041,6 +1042,10 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
 //        photoInfo["mirrored"] as Bool
         //localizeDataCompletion: ((_ imageData: Data?, _ location: CLLocation?, _ photoInfo: [String:String]?) -> Void)?
         self.localizeDataCompletion?(request.image.data, currentLocation ?? lastLocation, photoInfo, request.cameraPose)
+        
+        if self.localizeDataCompletion == nil {
+            stickerDelegate?.wrongLocalization()
+        }
         
         let response = HalfRealTimeScene.Localize.Response()
         self.presenter?.presentLocalize(response: response)
