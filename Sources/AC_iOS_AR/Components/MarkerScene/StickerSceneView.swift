@@ -525,9 +525,10 @@ class StickerSceneView: PassthroughView {
         self.isUserInteractionEnabled = true
         self.textBlockView.isUserInteractionEnabled = true
         self.pinMarkerStackView.isUserInteractionEnabled = true
+        self.stickerMarkerImage.isUserInteractionEnabled = true
         
         let tapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTapMarkerAndPinGesture))
-        self.textBlockView.addGestureRecognizer(tapGestureRecognizer)
+        self.stickerMarkerImage.addGestureRecognizer(tapGestureRecognizer)
         
         let tapGestureStickerRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTapMarkerAndPinGesture))
         self.pinMarkerStackView.addGestureRecognizer(tapGestureStickerRecognizer)
