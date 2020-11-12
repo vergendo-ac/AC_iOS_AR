@@ -150,6 +150,7 @@ class HalfRealTimeSceneInteractor: HalfRealTimeSceneDataStore {
     private var currentCategoryPin: CategoryPin?
     private var prevNearObjectsPins: ScreenNearObjectsPins = (.none, .none)
     private var lastVideoNodes: [String: ARFVideoNode] = [:]
+    private var getStickerFrame: (([StickerModels.Node]?) -> Void)? = nil
     
     //MARK: Clusters
     private let clusterCoordBinOffset: Int = 5 // 2ˆ5
@@ -250,9 +251,16 @@ class HalfRealTimeSceneInteractor: HalfRealTimeSceneDataStore {
                   hideStickerMarker: hideStickerMarker,
                   pinView: pinView ?? PassthroughView(),
                   stickerMarkerViewCompletion: { [weak self] (id, data) in
-                    self?.takeNextPhoto(request: HalfRealTimeScene.TakeNextPhoto.Request(completion: { (mData, mError, mDeviceOrientation) in
-                        self?.stickerDelegate?.tapped(stickerID: id, stickerData: data, framePoints: nil, imageData: mData)
-                    }))
+                    self?.getStickerFrame = { mNodes in
+                        self?.getStickerFrame = nil
+                        var framePoints: [CGPoint] = []
+                        if let nodes = mNodes, let points = nodes.first(where: { $0.id == stickerNode.id })?.points {
+                            framePoints = points
+                        }
+                        self?.takeNextPhoto(request: HalfRealTimeScene.TakeNextPhoto.Request(completion: { (mData, mError, mDeviceOrientation) in
+                            self?.stickerDelegate?.tapped(stickerID: id, stickerData: data, framePoints: framePoints, imageData: mData)
+                        }))
+                    }
                   }
                 )
                 acc[stickerNode.id]?.isHidden = true
@@ -601,6 +609,8 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
         self.currentDeviceOrientation = request.deviceOrientation
        
         //MARK: move nodes
+        
+        getStickerFrame?(request.maybeNodes)
        
         let (dictP, nums): ([Int:CGPoint]?, [Int:Int]?) = self.worker?.calcAR2DCentralPoints(maybeNodes: request.maybeNodes, windowSize: self.pinView?.frame.size ?? self.windowSize, maybeDeviceOrientation: self.currentDeviceOrientation) ?? (nil,nil)
        
