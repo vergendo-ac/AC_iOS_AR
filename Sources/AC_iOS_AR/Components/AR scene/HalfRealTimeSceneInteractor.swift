@@ -17,7 +17,7 @@ import ARKit
 typealias StickerViewDistance = (sticker: StickerSceneView, distance: Double)
 
 public protocol StickerDelegate {
-    func tapped(stickerID: Int, stickerData: StickerModels.StickerData?)
+    func tapped(stickerID: Int, stickerData: StickerModels.StickerData?, framePoints: [CGPoint]?, imageData: Data?)
     func update(stickers: [StickerModels.StickerData])
     func wrongLocalization()
 }
@@ -250,7 +250,9 @@ class HalfRealTimeSceneInteractor: HalfRealTimeSceneDataStore {
                   hideStickerMarker: hideStickerMarker,
                   pinView: pinView ?? PassthroughView(),
                   stickerMarkerViewCompletion: { [weak self] (id, data) in
-                    self?.stickerDelegate?.tapped(stickerID: id, stickerData: data)
+                    self?.takeNextPhoto(request: HalfRealTimeScene.TakeNextPhoto.Request(completion: { (mData, mError, mDeviceOrientation) in
+                        self?.stickerDelegate?.tapped(stickerID: id, stickerData: data, framePoints: nil, imageData: mData)
+                    }))
                   }
                 )
                 acc[stickerNode.id]?.isHidden = true
