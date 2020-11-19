@@ -315,9 +315,9 @@ extension UserDefaults {
         }
     }
     
-    static var objectFilter: [Int : Bool]? {
+    static var objectFilter: [String : Bool]? {
         get {
-            return standard.dictionary(forKey: Keys.ObjectsFilter) as? [Int : Bool]
+            return standard.dictionary(forKey: Keys.ObjectsFilter) as? [String : Bool]
         }
         set(v) {
             standard.set(v, forKey: Keys.ObjectsFilter)

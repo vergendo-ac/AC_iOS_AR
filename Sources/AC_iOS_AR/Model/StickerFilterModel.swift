@@ -37,6 +37,6 @@ enum StickerFilter: CaseIterable {
     }
     
     var id: Int? {
-        StickerFilter.titles.index(of: self.title)
+        StickerFilter.titles.firstIndex(of: self.title)
     }
 }

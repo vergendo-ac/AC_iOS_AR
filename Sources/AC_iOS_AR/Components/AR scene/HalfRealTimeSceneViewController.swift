@@ -538,7 +538,7 @@ extension HalfRealTimeSceneViewController: HalfRealTimeSceneDisplayLogic {
                     self.sticker3DRequest()
                     
                     //TODO: filter video stickers
-                    if let videoFilterID = StickerFilter.video.id, let isVideoFilter = UserDefaults.objectFilter?[videoFilterID], isVideoFilter {
+                    if let isVideoFilter = UserDefaults.objectFilter?[StickerFilter.video.title], isVideoFilter {
                         DispatchQueue.main.async {
                             let request = HalfRealTimeScene.VideoSticker.Request(context: context, arkitView: arkitView)
                             self.interactor?.handleVideoSticker(request: request)
