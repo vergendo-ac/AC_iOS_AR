@@ -34,6 +34,7 @@ extension UserDefaults {
         static let ArCreatures = "myplace_ar_creatures"
         static let ArFun = "myplace_ar_fun"
         static let UserIdentifier = "myplace_user_identifier"
+        static let ObjectsFilter = "myplace_objects_filter"
     }
     
     static var currentServer: String? {
@@ -311,6 +312,15 @@ extension UserDefaults {
         }
         set(v) {
             standard.set(v, forKey: Keys.UserIdentifier)
+        }
+    }
+    
+    static var objectFilter: [Int : Bool]? {
+        get {
+            return standard.dictionary(forKey: Keys.ObjectsFilter) as? [Int : Bool]
+        }
+        set(v) {
+            standard.set(v, forKey: Keys.ObjectsFilter)
         }
     }
     
