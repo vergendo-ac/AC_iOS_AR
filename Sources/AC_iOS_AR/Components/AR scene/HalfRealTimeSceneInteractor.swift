@@ -1067,6 +1067,7 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
         }
         relocalizeTimer?.invalidate()
         relocalizeTimer = nil
+        kfsClearParams()
     }
     
     func localize(request: HalfRealTimeScene.Localize.Request) {
