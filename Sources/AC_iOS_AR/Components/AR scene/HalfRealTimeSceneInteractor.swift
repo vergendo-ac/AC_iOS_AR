@@ -1052,13 +1052,18 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
         if relocalizeTimer == nil {
             relocalizeTimer = Timer.scheduledTimer(timeInterval: timerInterval, target: self, selector: #selector(updateRelocalizeTimer), userInfo: ["request": request], repeats: false)
             relocalizeTimer?.tolerance = 0.1
+            RunLoop.current.add(relocalizeTimer!, forMode: .common)
+            print("CVPixelBuffer: start timerr")
         }
     }
     @objc private func updateRelocalizeTimer(timer: Timer) {
         let userInfo = timer.userInfo as? Dictionary<String, Any>
         if let request = userInfo?["request"] as? HalfRealTimeScene.FrameSelector.Request {
+            print("CVPixelBuffer: request.posePixelBuffer = ", CVPixelBufferGetWidth(request.posePixelBuffer.image))
             let response = HalfRealTimeScene.FrameSelector.Response(posePixelBuffer: request.posePixelBuffer)
             presenter?.presentFrameSelector(response: response)
+        } else {
+            print("CVPixelBuffer no: request.posePixelBuffer")
         }
         relocalizeTimer?.invalidate()
         relocalizeTimer = nil
