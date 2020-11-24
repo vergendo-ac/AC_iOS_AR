@@ -24,7 +24,7 @@ protocol HalfRealTimeSceneDisplayLogic: class {
     func displayClusters(viewModel: HalfRealTimeScene.Clusters.ViewModel)
     func displayStart(viewModel: HalfRealTimeScene.Start.ViewModel)
     func displayMarkers2DMovable(viewModel: HalfRealTimeScene.Markers2DMovable.ViewModel)
-    func displayKfsFrameSelector(viewModel: HalfRealTimeScene.FrameSelector.ViewModel)
+    func displayFrameSelector(viewModel: HalfRealTimeScene.FrameSelector.ViewModel)
 
     func displayArSessionRun(viewModel: HalfRealTimeScene.ArSessionRun.ViewModel)
     func restoreCameraState()
@@ -407,7 +407,7 @@ class HalfRealTimeSceneViewController: UIViewController {
         }
     }
     
-    private func kfsSelectorRequest(posePixelBuffer: PixelBufferWithPose) {
+    /*private func kfsSelectorRequest(posePixelBuffer: PixelBufferWithPose) {
         guard self.cameraState.isArkit else {
             //print("[check] yet handling, isArkit:\(self.cameraState.isArkit)")
             return
@@ -416,6 +416,18 @@ class HalfRealTimeSceneViewController: UIViewController {
         DispatchQueue.main.async {
             let request = HalfRealTimeScene.FrameSelector.Request(posePixelBuffer: posePixelBuffer)
             self.interactor?.kfsFrameSelector(request: request)
+        }
+    }*/
+
+    private func timerSelectorRequest(posePixelBuffer: PixelBufferWithPose, timerInterval: TimeInterval) {
+        guard self.cameraState.isArkit else {
+            //print("[check] yet handling, isArkit:\(self.cameraState.isArkit)")
+            return
+        }
+        
+        DispatchQueue.main.async {
+            let request = HalfRealTimeScene.FrameSelector.Request(posePixelBuffer: posePixelBuffer)
+            self.interactor?.timerFrameSelector(request: request, timerInterval: timerInterval)
         }
     }
 
@@ -653,7 +665,7 @@ extension HalfRealTimeSceneViewController: HalfRealTimeSceneDisplayLogic {
                 
                 DispatchQueue.global().async {
                     let viewModel = HalfRealTimeScene.FrameSelector.ViewModel(posePixelBuffer: posePixelBuffer)
-                    self.displayKfsFrameSelector(viewModel: viewModel)
+                    self.displayFrameSelector(viewModel: viewModel)
                 }
             }
         }
@@ -680,7 +692,7 @@ extension HalfRealTimeSceneViewController: HalfRealTimeSceneDisplayLogic {
         }
     }
     
-    func displayKfsFrameSelector(viewModel: HalfRealTimeScene.FrameSelector.ViewModel) {
+    func displayFrameSelector(viewModel: HalfRealTimeScene.FrameSelector.ViewModel) {
         print("[loc] * lock displayKfsFrameSelector")
         syncRoot.lock()
         
@@ -826,15 +838,11 @@ extension HalfRealTimeSceneViewController: ArCameraManagerDelegate {
                     let buffer = PixelBufferWithPose(id: UUID().uuidString, image: frame.capturedImage, cameraPose: frame.camera.transform)
                     _ = context.put(posePixelBuffer: buffer)
                     
-                    if let stopKFS = router?.dataStore?.stopKFS, !stopKFS, !dataIsTaken {
-                        self.dataIsTaken = true
-                        //kfsSelectorRequest(posePixelBuffer: buffer)
-                        self.setSafeState(.arkit(context: context, prev: nil))
-                        self.displayKfsFrameSelector(viewModel: HalfRealTimeScene.FrameSelector.ViewModel(posePixelBuffer: buffer))
+                    if let stopKFS = router?.dataStore?.stopKFS, !stopKFS && kfsSelectorEnabled {
+                        timerSelectorRequest(posePixelBuffer: buffer, timerInterval: context.timerValue)
                     }
-
                 default:
-                    print("[session] session not ready, state = \(frame.camera.trackingState)")
+                    print("[localize] session not ready, state = \(frame.camera.trackingState)")
                     return
                 }
                 

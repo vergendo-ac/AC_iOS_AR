@@ -100,7 +100,7 @@ class ArCameraContext {
     }
     
     var timerValue: TimeInterval {
-        return TimeInterval(UserDefaults.arCameraTimerValue ?? 4)
+        return TimeInterval(UserDefaults.arCameraTimerValue ?? 3)
     }
     
     func setArPlaneMaxDistance(_ value: Double) {

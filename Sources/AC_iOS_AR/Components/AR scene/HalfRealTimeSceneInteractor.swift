@@ -58,6 +58,7 @@ protocol HalfRealTimeSceneBusinessLogic {
     func removeArContent(request: HalfRealTimeScene.ClearArContent.Request)
     
     func kfsFrameSelector(request: HalfRealTimeScene.FrameSelector.Request)
+    func timerFrameSelector(request: HalfRealTimeScene.FrameSelector.Request, timerInterval: TimeInterval)
     func kfsClearParams()
     
     func localize(request: HalfRealTimeScene.Localize.Request)
@@ -165,6 +166,9 @@ class HalfRealTimeSceneInteractor: HalfRealTimeSceneDataStore {
     private var localizeIsFirstAttempt: Bool = true
     private var localizeTimer: Timer?
     private var localizeDataCompletion: ((_ imageData: Data?, _ location: CLLocation?, _ photoInfo: [String:Any]?, _ cameraPose: Pose) -> Void)?
+    
+    //MARK: Relocalization
+    private var relocalizeTimer: Timer?
     
     var errorsInARow: Int = 0 {
         didSet {
@@ -607,6 +611,12 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
         }
     
         self.currentDeviceOrientation = request.deviceOrientation
+        
+        //
+        
+        //MARK: sort by sticker type
+        
+        //
        
         //MARK: move nodes
         
@@ -631,6 +641,7 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
                 videoNode?.pause()
             }
         }
+        
         
         // sort items on pins and stickers
         
@@ -1031,9 +1042,26 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
         lastVideoNodes = [:]
     }
     
+    //MARK: Relocalization
     func kfsFrameSelector(request: HalfRealTimeScene.FrameSelector.Request) {
         let response = HalfRealTimeScene.FrameSelector.Response(posePixelBuffer: request.posePixelBuffer)
         presenter?.presentKfsFrameSelector(response: response)
+    }
+    
+    func timerFrameSelector(request: HalfRealTimeScene.FrameSelector.Request, timerInterval: TimeInterval) {
+        if relocalizeTimer == nil {
+            relocalizeTimer = Timer.scheduledTimer(timeInterval: timerInterval, target: self, selector: #selector(updateRelocalizeTimer), userInfo: ["request": request], repeats: false)
+            relocalizeTimer?.tolerance = 0.1
+        }
+    }
+    @objc private func updateRelocalizeTimer(timer: Timer) {
+        let userInfo = timer.userInfo as? Dictionary<String, Any>
+        if let request = userInfo?["request"] as? HalfRealTimeScene.FrameSelector.Request {
+            let response = HalfRealTimeScene.FrameSelector.Response(posePixelBuffer: request.posePixelBuffer)
+            presenter?.presentFrameSelector(response: response)
+        }
+        relocalizeTimer?.invalidate()
+        relocalizeTimer = nil
     }
     
     func localize(request: HalfRealTimeScene.Localize.Request) {

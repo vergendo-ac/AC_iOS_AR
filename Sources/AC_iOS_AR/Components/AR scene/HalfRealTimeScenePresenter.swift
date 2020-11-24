@@ -32,7 +32,8 @@ protocol HalfRealTimeScenePresentationLogic {
     //MARK: new API
     func presentLocalize(response: HalfRealTimeScene.Localize.Response)
     func presentKfsFrameSelector(response: HalfRealTimeScene.FrameSelector.Response)
-    
+    func presentFrameSelector(response: HalfRealTimeScene.FrameSelector.Response)
+
     func presentLocalizeData(response: HalfRealTimeScene.LocalizeData.Response)
     func presentARObjects(response: HalfRealTimeScene.ARObjects.Response)
 
@@ -309,7 +310,12 @@ class HalfRealTimeScenePresenter: HalfRealTimeScenePresentationLogic {
             viewController?.displayKfsFrameSelector(viewModel: viewModel)
         }*/
         
-        self.viewController?.displayKfsFrameSelector(viewModel: viewModel)
+        self.viewController?.displayFrameSelector(viewModel: viewModel)
+    }
+    
+    func presentFrameSelector(response: HalfRealTimeScene.FrameSelector.Response) {
+        let viewModel = HalfRealTimeScene.FrameSelector.ViewModel(posePixelBuffer: response.posePixelBuffer)
+        self.viewController?.displayFrameSelector(viewModel: viewModel)
     }
     
     func presentLocalizeData(response: HalfRealTimeScene.LocalizeData.Response) {
