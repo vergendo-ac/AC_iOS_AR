@@ -18,9 +18,9 @@ extension Scene3D {
         return nil
     }
     
-    func getStickerTypeById(_ id: String) -> CategoryPin? {
+    func getStickerTypeById(_ id: String) -> InfoStickerCategory? {
         if let stickerData = self.stickersData.first(where: { $0.options[StickerOptions.stickerID] == id }), let sid = stickerData.options[StickerOptions.stickerType] {
-            return CategoryPin.category(for: sid)
+            return InfoStickerCategory.category(for: sid)
         }
         return nil
     }

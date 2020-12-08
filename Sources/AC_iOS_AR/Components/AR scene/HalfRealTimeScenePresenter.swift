@@ -39,6 +39,7 @@ protocol HalfRealTimeScenePresentationLogic {
 
     func presentDelegate(response: HalfRealTimeScene.Delegate.Response)
     func presentDelete(response: HalfRealTimeScene.Delete.Response)
+    func presentStickerFilters(response: HalfRealTimeScene.StickerFilters.Response)
 }
 
 class HalfRealTimeScenePresenter: HalfRealTimeScenePresentationLogic {
@@ -386,6 +387,10 @@ class HalfRealTimeScenePresenter: HalfRealTimeScenePresentationLogic {
     func presentDelete(response: HalfRealTimeScene.Delete.Response) {
         let viewModel = HalfRealTimeScene.Delete.ViewModel()
         self.viewController?.displayDelete(viewModel: viewModel)
+    }
+    
+    func presentStickerFilters(response: HalfRealTimeScene.StickerFilters.Response) {
+        self.viewController?.displayStickerFilters(viewModel: HalfRealTimeScene.StickerFilters.ViewModel())
     }
     
 }

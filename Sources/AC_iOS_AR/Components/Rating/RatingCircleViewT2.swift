@@ -21,7 +21,7 @@ class RatingCircleViewT2: UIView {
         }
     }
     fileprivate var index: Int = 10
-    var rcolor: CategoryPin = .other {
+    var rcolor: InfoStickerCategory = .other {
         didSet {
             self.setNeedsDisplay()
         }
@@ -56,7 +56,7 @@ class RatingCircleViewT2: UIView {
         
     }
     
-    public func setType(color: CategoryPin) {
+    public func setType(color: InfoStickerCategory) {
         self.rcolor = color
     }
     

@@ -45,6 +45,9 @@ open class AR {
         public static func delete(stickerID: Int) {
             AR.controller.delete(by: stickerID)
         }
+        public static func filter(by types: [String:Bool] = [:]) {
+            AR.controller.set(filters: types)
+        }
     }
 
 }

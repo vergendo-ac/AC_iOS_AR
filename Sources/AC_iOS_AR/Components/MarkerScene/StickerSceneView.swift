@@ -8,65 +8,6 @@
 
 import UIKit
 
-enum CategoryPin: String {
-    case restaurant
-    case shop
-    case other
-    case place
-    
-    var image: UIImage {
-        switch self {
-        case .restaurant: return UIImage(named: "restaurant")!
-        case .shop: return UIImage(named: "shop")!
-        case .other: return UIImage(named: "other")!
-        case .place: return UIImage(named: "place")!
-        }
-    }
-    
-    var color: UIColor {
-        switch self {
-        case .restaurant: return UIColor(hex: "689F38")
-        case .shop: return UIColor(hex: "2196F3")
-        case .other: return UIColor(hex: "E64A19")
-        case .place: return UIColor(hex: "FFC107")
-        }
-    }
-    
-    var borderColor: UIColor {
-        switch self {
-        case .restaurant: return UIColor(hex: "558B2F")
-        case .shop: return UIColor(hex: "1565C0")
-        case .other: return UIColor(hex: "D84315")
-        case .place: return UIColor(hex: "FF8F00")
-        }
-    }
-    
-    var rgbar: (CGFloat, CGFloat, CGFloat, CGFloat, Bool) {
-        return color.rgbaTuple
-    }
-    
-    static func category(for name: String?) -> CategoryPin {
-        guard let name = name else { return .other }
-        switch name {
-        case "restaurant":
-            return .restaurant
-        case "shop":
-            return .shop
-        case "other":
-            return .other
-        case "place":
-            return .place
-        default:
-            return .other
-        }
-    }
-    
-    func isSame(type: CategoryPin?) -> Bool {
-        guard let type = type else { return true }
-        return self == type
-    }
-}
-
 enum StickerPosition {
     case up
     case down
@@ -106,17 +47,29 @@ class StickerSceneView: PassthroughView {
     private var nameLabel: UILabel! = UILabel()
     private var ratingLabel: UILabel! = UILabel()
     private var descriptionLabel: UILabel! = UILabel()
-    private var stickerMarkerImage: UIImageView = UIImageView(image: CategoryPin.other.image)
+    private var stickerMarkerImage: UIImageView = UIImageView(image: InfoStickerCategory.other.image)
     private var ratingLabelImage: UIImageView! = UIImageView(image: UIImage(named: "star"))
     private var stickerSceneContainerView: StickerSceneContainerView!
     private var distanceLabel: UILabel! = UILabel()
     private var scaledPinSize: CGSize = StickerSceneView.pinSize
     
-    enum ViewType {
+    enum ViewType: String, CaseIterable {
         case pin
         case sticker
         case video
         case cluster
+        
+        var title: String {
+            self.rawValue.capitalizingFirstLetter()
+        }
+        
+        static var viewTypes: [StickerSceneView.ViewType] {
+            StickerSceneView.ViewType.allCases
+        }
+        
+        static var titles: [String] {
+            StickerSceneView.ViewType.viewTypes.map({ $0.title })
+        }
     }
     
     struct Design {
@@ -189,7 +142,7 @@ class StickerSceneView: PassthroughView {
         }
     }
     
-    var currentType: CategoryPin = .other
+    var currentType: InfoStickerCategory = .other
     var circleView = RatingCellT2()
     public var viewType: ViewType = .sticker
     private var pinView: UIView! /*PassthroughView!*/
@@ -567,7 +520,7 @@ class StickerSceneView: PassthroughView {
                 self.ratingLabel.isHidden = isHidden
             }
             
-            self.currentType = CategoryPin.category(for: image)
+            self.currentType = InfoStickerCategory.category(for: image)
             self.stickerMarkerImage.image = self.currentType.image
             self.textBlockView.backgroundColor = self.currentType.color
             self.circleView.backgroundColor = self.currentType.color

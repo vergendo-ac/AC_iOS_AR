@@ -46,8 +46,8 @@ indirect enum HalfRealCameraState {
 enum HalfRealTimeScene {
     
     enum NearObjectsPinType {
-        case left(id: String, y: CGFloat, count: Int, all: Int, categoryPin: CategoryPin)
-        case right(id: String, y: CGFloat, count: Int, all: Int, categoryPin: CategoryPin)
+        case left(id: String, y: CGFloat, count: Int, all: Int, categoryPin: InfoStickerCategory)
+        case right(id: String, y: CGFloat, count: Int, all: Int, categoryPin: InfoStickerCategory)
         case none
         
         var isNone: Bool {
@@ -640,7 +640,7 @@ enum HalfRealTimeScene {
     
     enum Filter {
         struct Request {
-            let filterStickerType: CategoryPin?
+            let filterStickerType: InfoStickerCategory?
         }
         
         struct Response {
@@ -750,6 +750,18 @@ enum HalfRealTimeScene {
     enum Delete {
         struct Request {
             let stickerID: Int
+        }
+        
+        struct Response {
+        }
+        
+        struct ViewModel {
+        }
+    }
+    
+    enum StickerFilters {
+        struct Request {
+            let filters: [String:Bool]
         }
         
         struct Response {

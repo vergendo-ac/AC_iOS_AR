@@ -68,6 +68,8 @@ protocol HalfRealTimeSceneBusinessLogic {
     
     func setDelegate(request: HalfRealTimeScene.Delegate.Request)
     func delete(request: HalfRealTimeScene.Delete.Request)
+    
+    func updateFilters(request: HalfRealTimeScene.StickerFilters.Request)
 }
 
 protocol HalfRealTimeSceneDataStore {
@@ -148,7 +150,7 @@ class HalfRealTimeSceneInteractor: HalfRealTimeSceneDataStore {
     private var arStickerDistanceEnabled = UserDefaults.arStickerDistanceEnabled ?? false
     private var stickersLimit = 5
     private var lastMainNodePoses: Node3dPoses?
-    private var currentCategoryPin: CategoryPin?
+    private var currentCategoryPin: InfoStickerCategory?
     private var prevNearObjectsPins: ScreenNearObjectsPins = (.none, .none)
     private var lastVideoNodes: [String: ARFVideoNode] = [:]
     private var getStickerFrame: (([StickerModels.Node]?) -> Void)? = nil
@@ -170,6 +172,9 @@ class HalfRealTimeSceneInteractor: HalfRealTimeSceneDataStore {
     //MARK: Relocalization
     private var relocalizeTimer: Timer?
     
+    //MARK: Filters
+    private var stickerFilters: [String:Bool] = [:]
+
     var errorsInARow: Int = 0 {
         didSet {
             print("errorsInARow = \(errorsInARow)")
@@ -612,12 +617,6 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
     
         self.currentDeviceOrientation = request.deviceOrientation
         
-        //
-        
-        //MARK: sort by sticker type
-        
-        //
-       
         //MARK: move nodes
         
         getStickerFrame?(request.maybeNodes)
@@ -625,15 +624,23 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
         let (dictP, nums): ([Int:CGPoint]?, [Int:Int]?) = self.worker?.calcAR2DCentralPoints(maybeNodes: request.maybeNodes, windowSize: self.pinView?.frame.size ?? self.windowSize, maybeDeviceOrientation: self.currentDeviceOrientation) ?? (nil,nil)
        
         var stickerItems: [StickerViewDistance] = []
+
+        //filter nodes by type or category
+        let isFilteredOut: (_ sceneView: StickerSceneView) -> Bool = { sceneView in
+            let viewTypeFilter: Bool = self.stickerFilters[sceneView.viewType.title] ?? false
+            let currentTypeFilter: Bool = self.stickerFilters[sceneView.currentType.title] ?? false
+
+            return viewTypeFilter || currentTypeFilter
+        }
         
         for (id, markerView) in self.stickerSceneViews {
             let videoNode = getVideSticker(by: id, context: request.context)
-            if let centralPoint = dictP?[id],
+            if  !isFilteredOut(markerView),
+                let centralPoint = dictP?[id],
                 let isInBounds = self.worker?.nodeInBounds(p: centralPoint, windowSize: self.pinView?.frame.size ?? self.windowSize),
                 isInBounds, (markerView.currentType.isSame(type: self.currentCategoryPin) || videoNode != nil),
                 let stickerNodes = request.maybeNodes,
                 let distance = stickerNodes.first(where: {$0.id == id})?.distance {
-        
                 markerView.move(centralPoint: centralPoint)
                 stickerItems.append((markerView, distance))
             } else {
@@ -641,6 +648,7 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
                 videoNode?.pause()
             }
         }
+        
         
         
         // sort items on pins and stickers
@@ -1127,6 +1135,15 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
         
         let response = HalfRealTimeScene.Delete.Response()
         self.presenter?.presentDelete(response: response)
+    }
+    
+    func updateFilters(request: HalfRealTimeScene.StickerFilters.Request) {
+        if request.filters.count > 0 {
+            self.stickerFilters = request.filters
+        } else if let objectFilter = UserDefaults.objectFilter {
+            self.stickerFilters = objectFilter
+        }
+        self.presenter?.presentStickerFilters(response: HalfRealTimeScene.StickerFilters.Response())
     }
 
 }

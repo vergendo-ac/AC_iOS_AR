@@ -24,7 +24,7 @@ class RatingCellT2: UICollectionViewCell {
         print("deinit RatingCell")
     }
     
-    public func configure(with cellIndex: Float, totalRatingValue: Float, colorType: CategoryPin) {
+    public func configure(with cellIndex: Float, totalRatingValue: Float, colorType: InfoStickerCategory) {
         let divRemain = totalRatingValue / (cellIndex + 1)
         let remain = ((totalRatingValue - cellIndex) < 0.5) ? 0 : 0.5
         

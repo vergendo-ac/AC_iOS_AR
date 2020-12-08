@@ -37,6 +37,8 @@ protocol HalfRealTimeSceneDisplayLogic: class {
     
     func displayDelegate(viewModel:  HalfRealTimeScene.Delegate.ViewModel)
     func displayDelete(viewModel:  HalfRealTimeScene.Delete.ViewModel)
+    
+    func displayStickerFilters(viewModel: HalfRealTimeScene.StickerFilters.ViewModel)
 }
 
 class HalfRealTimeSceneViewController: UIViewController {
@@ -132,6 +134,10 @@ class HalfRealTimeSceneViewController: UIViewController {
         self.arBackView = backView
         let request = HalfRealTimeScene.Delegate.Request(stickerDelegate: stickerDelegate)
         interactor?.setDelegate(request: request)
+    }
+    
+    func set(filters: [String:Bool]) {
+        interactor?.updateFilters(request: HalfRealTimeScene.StickerFilters.Request(filters: filters))
     }
     
     private func startAR() {
@@ -430,7 +436,7 @@ class HalfRealTimeSceneViewController: UIViewController {
             self.interactor?.timerFrameSelector(request: request, timerInterval: timerInterval)
         }
     }
-
+    
 }
 
 extension HalfRealTimeSceneViewController: HalfRealTimeSceneDisplayLogic {
@@ -652,7 +658,7 @@ extension HalfRealTimeSceneViewController: HalfRealTimeSceneDisplayLogic {
     }
     
     private func sticker3DRequest(deadline: Double = requestDeadline, force: Bool = false) {
-        if !kfsSelectorEnabled, force {
+        if !kfsSelectorEnabled || force {
             
             print("[loc] start task for sticker3DRequest")
             
@@ -779,6 +785,10 @@ extension HalfRealTimeSceneViewController: HalfRealTimeSceneDisplayLogic {
     
     func displayDelete(viewModel:  HalfRealTimeScene.Delete.ViewModel) {
         print("HalfRealTimeScene.Delete.ViewModel")
+    }
+    
+    func displayStickerFilters(viewModel: HalfRealTimeScene.StickerFilters.ViewModel) {
+        print("HalfRealTimeScene.StickerFilters.ViewModel")
     }
     
 }
