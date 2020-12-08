@@ -426,10 +426,12 @@ class HalfRealTimeSceneViewController: UIViewController {
     }*/
 
     private func timerSelectorRequest(posePixelBuffer: PixelBufferWithPose, timerInterval: TimeInterval) {
-        guard self.cameraState.isArkit else {
+        /*guard self.cameraState.isArkit else {
             //print("[check] yet handling, isArkit:\(self.cameraState.isArkit)")
             return
-        }
+        }*/
+        
+        print("[check] yet handling, isArkit:\(self.cameraState.isArkit)")
         
         DispatchQueue.main.async {
             let request = HalfRealTimeScene.FrameSelector.Request(posePixelBuffer: posePixelBuffer)
