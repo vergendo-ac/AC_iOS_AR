@@ -148,7 +148,7 @@ enum HalfRealTimeScene {
         }
     }
     
-    enum SavePhoto {
+    /*enum SavePhoto {
         struct Request {
             let image: ImageModels.Image?
             let deviceOrientation: UIDeviceOrientation?
@@ -158,7 +158,7 @@ enum HalfRealTimeScene {
         }
         struct ViewModel {
         }
-    }
+    }*/
     
     enum GetStickers {
         struct Request {
@@ -263,7 +263,7 @@ enum HalfRealTimeScene {
         }
     }
     
-    enum TakeNextPhoto {
+   /*enum TakeNextPhoto {
         struct Request {
             let completion: ((Data?, NSError?, UIDeviceOrientation?) -> Void)?
         }
@@ -273,7 +273,7 @@ enum HalfRealTimeScene {
         struct ViewModel {
             let completion: ((Data?, NSError?, UIDeviceOrientation?) -> Void)?
         }
-    }
+    }*/
     
     enum StickerView {
         struct Request {
@@ -321,18 +321,25 @@ enum HalfRealTimeScene {
         }
     }
     
-    enum Start {
+    enum Stop {
         struct Request {
-            let isStartFetching: Bool
         }
         struct Response {
-            let isStartFetching: Bool
         }
         struct ViewModel {
-            let isStartFetching: Bool
         }
     }
     
+    enum Start {
+        struct Request {
+            let arBackView: UIView?
+        }
+        struct Response {
+        }
+        struct ViewModel {
+        }
+    }
+
     enum Alert {
         struct Request {
         }
