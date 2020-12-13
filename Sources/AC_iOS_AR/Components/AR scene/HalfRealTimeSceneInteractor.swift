@@ -706,7 +706,9 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
             
             if sceneView.viewType.isVideo, let videoNode = self.getVideSticker(by: sceneView.stickerData?.id ?? 0, context: request.context) {
                 videoNode.isHidden = !viewTypeFilter
-                if !viewTypeFilter {
+                if viewTypeFilter {
+                    videoNode.play()
+                } else {
                     videoNode.stop()
                 }
             }
