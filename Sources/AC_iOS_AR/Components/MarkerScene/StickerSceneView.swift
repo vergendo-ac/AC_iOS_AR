@@ -63,6 +63,13 @@ class StickerSceneView: PassthroughView {
             self.rawValue.capitalizingFirstLetter()
         }
         
+        var isVideo: Bool {
+            switch self {
+            case .video: return true
+            default: return false
+            }
+        }
+        
         static var viewTypes: [StickerSceneView.ViewType] {
             StickerSceneView.ViewType.allCases
         }
@@ -70,6 +77,7 @@ class StickerSceneView: PassthroughView {
         static var titles: [String] {
             StickerSceneView.ViewType.viewTypes.map({ $0.title })
         }
+        
     }
     
     struct Design {
@@ -420,7 +428,8 @@ class StickerSceneView: PassthroughView {
                         time: stickerData?.options[StickerOptions.phoneNumber],
                         image: stickerData?.options[StickerOptions.stickerType],
                         price: stickerData?.options[StickerOptions.priceCategory],
-                        fback: stickerData?.options[StickerOptions.feedbackAmount])
+                        fback: stickerData?.options[StickerOptions.feedbackAmount],
+                        path: stickerData?.options[StickerOptions.path])
     }
     
 //    private func makePointsdashLineCenter() -> (CGPoint, CGPoint) {
@@ -493,8 +502,30 @@ class StickerSceneView: PassthroughView {
         self.stickerMarkerImage.isHighlighted = false
     }
     
-    private func updateData(rating: String?, name: String?, desc: String?, type: String?, time: String?, image: String?, price: String?, fback: String?) {
-        DispatchQueue.main.async {
+    private func isVideoSticker(path: String?) -> Bool {
+        if let urlString = path, urlString.suffix(4) == ".mp4", let _ = URL(string: urlString)  {
+            return true
+        }
+        return false
+    }
+    
+    private func updateData(
+        rating: String?,
+        name: String?,
+        desc: String?,
+        type: String?,
+        time: String?,
+        image: String?,
+        price: String?,
+        fback: String?,
+        path: String?
+    ) {
+        DispatchQueue.main.async { [self] in
+            
+            if self.isVideoSticker(path: path) {
+                self.setViewType(.video, distance: nil)
+            }
+            
             //name
             self.nameLabel.text = name
             

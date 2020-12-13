@@ -667,13 +667,6 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
         return nil
     }
     
-    private func isVideoSticker(stickerData: StickerModels.StickerData) -> Bool {
-        if let urlString = stickerData.options[StickerOptions.path], urlString.suffix(4) == ".mp4", let _ = URL(string: urlString)  {
-            return true
-        }
-        return false
-    }
-    
     func move2DMarkers(request: HalfRealTimeScene.Markers2DMovable.Request) {
         
         guard !self.isCameraStopped, self.currentImage?.size != nil else {
@@ -712,14 +705,16 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
             let currentTypeFilter: Bool = self.stickerFilters[sceneView.currentType.title] ?? false
             
             
-            print("StickerFilters", sceneView.viewType.title, viewTypeFilter, sceneView.currentType.title, currentTypeFilter)
+            print("StickerFilters TypeCheck", sceneView.viewType.title, viewTypeFilter, sceneView.currentType.title, currentTypeFilter)
 
             return viewTypeFilter || currentTypeFilter
         }
         
+        print("StickerFilters New step")
+        
         for (id, markerView) in self.stickerSceneViews {
             let videoNode = getVideSticker(by: id, context: request.context)
-            if  !isFilteredOut(markerView),
+            if  isFilteredOut(markerView),
                 let centralPoint = dictP?[id],
                 let isInBounds = self.worker?.nodeInBounds(p: centralPoint, windowSize: self.pinView?.frame.size ?? self.windowSize),
                 isInBounds, (markerView.currentType.isSame(type: self.currentCategoryPin) || videoNode != nil),
@@ -750,7 +745,7 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
         for (index, item) in stickerItems.enumerated() {
             let distance = arStickerDistanceEnabled ? item.distance: nil
             let videoNode = getVideSticker(by: item.sticker.stickerData?.id ?? 0, context: request.context)
-            let isVideo = item.sticker.stickerData != nil ? isVideoSticker(stickerData: item.sticker.stickerData!) : false
+            let isVideo = item.sticker.viewType.isVideo
             
             if videoNode != nil, let id = item.sticker.stickerData?.id, let pose = getPose(id: id) {
                 videoNode?.simdWorldTransform = pose
@@ -1228,7 +1223,7 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
             self.stickerFilters = objectFilter
         }
         
-        print("StickerFilters: ", Array(self.stickerFilters.values))
+        print("StickerFilters All: ", self.stickerFilters.map({ ($0, $1) }))
         self.presenter?.presentStickerFilters(response: HalfRealTimeScene.StickerFilters.Response())
     }
 
