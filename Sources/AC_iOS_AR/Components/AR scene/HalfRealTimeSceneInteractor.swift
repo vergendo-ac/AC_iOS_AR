@@ -624,7 +624,7 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
         self.stopKFS = true
         self.arBackView = request.arBackView
         
-        let isStartFetching = (self.arBackView != nil) && !(self.isCameraStopped)
+        let isStartFetching = (self.arBackView != nil) && !(self.isCameraStopped) && !stopKFS
         
         if isStartFetching {
             self.startAR()
@@ -1317,7 +1317,7 @@ extension HalfRealTimeSceneInteractor {
         cameraManager.resumeCaptureSession { _ in
             self.cameraState = .arkit(context: context, prev: nil)
             self.startArCameraManager(request: HalfRealTimeScene.StartArCamera.Request())
-            self.sticker3DRequest(force: true)
+            self.sticker3DRequest()
             self.updateArTrace(arkitView: cameraManager.arKitSceneView, cameraPose: nil, cameraAngles: nil)
             self.setupArCreature(arkitView: cameraManager.arKitSceneView, superView: self.arBackView)
         }
@@ -1575,7 +1575,7 @@ extension HalfRealTimeSceneInteractor {
     }
     
     private func sticker3DRequest(deadline: Double = requestDeadline, force: Bool = false) {
-        if !kfsSelectorEnabled || force {
+        if (kfsSelectorEnabled && !stopKFS) || force {
             
             print("[loc] start task for sticker3DRequest")
             
@@ -1636,18 +1636,14 @@ extension HalfRealTimeSceneInteractor {
             let prev = self.cameraState
             self.cameraState = .preparing(prev: prev)
             let posePixelBuffer = viewModel.posePixelBuffer
-            /*
+            
             let result = cameraManager.prepareImage(pixelBuffer: posePixelBuffer.image)
             
             guard let dataImage = result.data else {
                 self.cameraState = prev
                 self.sticker3DRequest()
                 return
-            }*/
-            
-            let image = UIImage(pixelBuffer: posePixelBuffer.image)
-            let img = cameraManager.fixOrientation(withImage: image!)
-            let dataImage = img.jpegData(compressionQuality: 1.0)!
+            }
             
             _ = context.put(pose: posePixelBuffer.cameraPose, id: posePixelBuffer.id)
             self.createCameraPosesAnchors()
