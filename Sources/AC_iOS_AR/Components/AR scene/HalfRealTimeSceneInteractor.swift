@@ -624,7 +624,7 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
         self.stopKFS = true
         self.arBackView = request.arBackView
         
-        let isStartFetching = (self.arBackView != nil) && !(self.isCameraStopped) && !stopKFS
+        let isStartFetching = (self.arBackView != nil) && !(self.isCameraStopped)
         
         if isStartFetching {
             self.startAR()
