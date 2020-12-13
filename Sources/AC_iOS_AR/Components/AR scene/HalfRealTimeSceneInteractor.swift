@@ -710,6 +710,9 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
         let isFilteredOut: (_ sceneView: StickerSceneView) -> Bool = { sceneView in
             let viewTypeFilter: Bool = self.stickerFilters[sceneView.viewType.title] ?? false
             let currentTypeFilter: Bool = self.stickerFilters[sceneView.currentType.title] ?? false
+            
+            
+            print("StickerFilters", sceneView.viewType.title, viewTypeFilter, sceneView.currentType.title, currentTypeFilter)
 
             return viewTypeFilter || currentTypeFilter
         }
@@ -1224,6 +1227,8 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
         } else if let objectFilter = UserDefaults.objectFilter {
             self.stickerFilters = objectFilter
         }
+        
+        print("StickerFilters: ", Array(self.stickerFilters.values))
         self.presenter?.presentStickerFilters(response: HalfRealTimeScene.StickerFilters.Response())
     }
 
@@ -1513,12 +1518,12 @@ extension HalfRealTimeSceneInteractor {
                     self.sticker3DRequest()
                     
                     //TODO: filter video stickers
-                    if let isVideoFilter = UserDefaults.objectFilter?[StickerFilter.video.title], isVideoFilter {
+                    //if let isVideoFilter = UserDefaults.objectFilter?[StickerFilter.video.title], isVideoFilter {
                         DispatchQueue.main.async {
                             let request = HalfRealTimeScene.VideoSticker.Request(context: context, arkitView: arkitView)
                             self.handleVideoSticker(request: request)
                         }
-                    }
+                    //}
                     
                 }
             default:
