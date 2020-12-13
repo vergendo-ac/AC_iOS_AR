@@ -623,6 +623,7 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
         self.localizeIsFirstAttempt = true
         self.stopKFS = true
         self.arBackView = request.arBackView
+        self.stickerFilters = UserDefaults.objectFilter ?? [:]
         
         let isStartFetching = (self.arBackView != nil) && !(self.isCameraStopped)
         
