@@ -239,5 +239,9 @@ extension HalfRealTimeSceneViewController {
         interactor?.delete(request: request)
     }
     
+    func takePhoto(completion: @escaping (Data?, NSError?, UIDeviceOrientation?) -> Void) {
+        let request = HalfRealTimeScene.TakeNextPhoto.Request(completion: completion)
+        self.interactor?.takeNextPhoto(request: request)
+    }
 
 }

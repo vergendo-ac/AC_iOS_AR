@@ -263,17 +263,15 @@ enum HalfRealTimeScene {
         }
     }
     
-   /*enum TakeNextPhoto {
+   enum TakeNextPhoto {
         struct Request {
-            let completion: ((Data?, NSError?, UIDeviceOrientation?) -> Void)?
+            let completion: ((Data?, NSError?, UIDeviceOrientation?) -> Void)
         }
         struct Response {
-            let completion: ((Data?, NSError?, UIDeviceOrientation?) -> Void)?
         }
         struct ViewModel {
-            let completion: ((Data?, NSError?, UIDeviceOrientation?) -> Void)?
         }
-    }*/
+    }
     
     enum StickerView {
         struct Request {

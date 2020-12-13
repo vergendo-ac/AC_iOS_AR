@@ -27,7 +27,7 @@ protocol HalfRealTimeSceneBusinessLogic {
     
     //func savePhoto(request: HalfRealTimeScene.SavePhoto.Request)
     
-    //func takeNextPhoto(request: HalfRealTimeScene.TakeNextPhoto.Request)
+    func takeNextPhoto(request: HalfRealTimeScene.TakeNextPhoto.Request)
     
     func start(request: HalfRealTimeScene.Start.Request)
     func stop(request: HalfRealTimeScene.Stop.Request)
@@ -608,9 +608,9 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
         })
     }*/
     
-    /*func takeNextPhoto(request: HalfRealTimeScene.TakeNextPhoto.Request) {
-        self.doNextPhoto(request: request)
-    }*/
+    func takeNextPhoto(request: HalfRealTimeScene.TakeNextPhoto.Request) {
+        self.cameraManager.takePhoto(completion: request.completion)
+    }
     
     func start(request: HalfRealTimeScene.Start.Request) {
         YaMotionManager.sharedInstance.delegate = self

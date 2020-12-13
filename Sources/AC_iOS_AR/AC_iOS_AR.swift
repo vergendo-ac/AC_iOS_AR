@@ -35,6 +35,10 @@ open class AR {
             AR.controller.show(localizationResult: localizationResult)
         }
         
+        public static func takePhoto(completion: @escaping (Data?, NSError?, UIDeviceOrientation?) -> Void) {
+            AR.controller.takePhoto(completion: completion)
+        }
+        
     }
     
     open class Sticker {
