@@ -704,6 +704,12 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
             let viewTypeFilter: Bool = self.stickerFilters[sceneView.viewType.title] ?? false
             let currentTypeFilter: Bool = self.stickerFilters[sceneView.currentType.title] ?? false
             
+            if sceneView.viewType.isVideo, let videoNode = self.getVideSticker(by: sceneView.stickerData?.id ?? 0, context: request.context) {
+                videoNode.isHidden = !viewTypeFilter
+                if !viewTypeFilter {
+                    videoNode.stop()
+                }
+            }
             
             print("StickerFilters TypeCheck", sceneView.viewType.title, viewTypeFilter, sceneView.currentType.title, currentTypeFilter)
 
