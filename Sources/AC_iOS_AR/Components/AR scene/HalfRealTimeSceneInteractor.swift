@@ -367,7 +367,7 @@ class HalfRealTimeSceneInteractor: HalfRealTimeSceneDataStore {
         print(self.stickerSceneViews.count)
         //let chessedView = worker?.chessStickers(views: self.stickerMarkerViews.values.reduce(into: [], { $0.append($1) }))
         //let positionViews = worker?.updateStickersPosition(views: stickerMarkerViews.values.reduce(into: [], { $0.append($1) }), pinViewSize: pinView?.frame.size ?? windowSize)
-        let positionViews = worker?.alignStickers(views: stickerSceneViews.values.reduce(into: [], { $0.append($1) }), pinViewSize: pinView?.frame.size ?? windowSize)
+        _ = worker?.alignStickers(views: stickerSceneViews.values.reduce(into: [], { $0.append($1) }), pinViewSize: pinView?.frame.size ?? windowSize)
         let response = HalfRealTimeScene.Nodes.Response (
             views: Array(stickerSceneViews.values),
             frames: self.stickerMarkerFrameViews?.values.reduce(into: [], { $0.append($1) })
@@ -467,7 +467,7 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
         self.uiNavigationController = nil
         self.stickerSceneViews = [:]
 
-        let response = HalfRealTimeScene.DeInit.Response()
+        //let response = HalfRealTimeScene.DeInit.Response()
         //presenter?.presentDeInit(response: response) 
         
         self.presenter = nil
@@ -637,6 +637,7 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
     }
     
     func stop(request: HalfRealTimeScene.Stop.Request) {
+        self.stopKFS = true
         DispatchQueue.main.async {
             UIApplication.shared.isIdleTimerDisabled = false
             self.switchCamera(isON: false)
@@ -696,7 +697,7 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
         
         getStickerFrame?(request.maybeNodes)
        
-        let (dictP, nums): ([Int:CGPoint]?, [Int:Int]?) = self.worker?.calcAR2DCentralPoints(maybeNodes: request.maybeNodes, windowSize: self.pinView?.frame.size ?? self.windowSize, maybeDeviceOrientation: self.currentDeviceOrientation) ?? (nil,nil)
+        let (dictP, _): ([Int:CGPoint]?, [Int:Int]?) = self.worker?.calcAR2DCentralPoints(maybeNodes: request.maybeNodes, windowSize: self.pinView?.frame.size ?? self.windowSize, maybeDeviceOrientation: self.currentDeviceOrientation) ?? (nil,nil)
        
         var stickerItems: [StickerViewDistance] = []
 
@@ -1008,7 +1009,7 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
     private func removeArContent(arkitView: ARSCNView) {
         lastVideoNodes = [:]
         for child in arkitView.scene.rootNode.childNodes {
-            if let node = child as? ARFVideoNode, let name = node.name {
+            if let node = child as? ARFVideoNode, node.name != nil {
                 node.cleanup()
                 node.removeFromParentNode()
             }
@@ -1762,7 +1763,7 @@ extension HalfRealTimeSceneInteractor {
     }
     
     func presentMarkers2DMovable(response: HalfRealTimeScene.Markers2DMovable.Response) {
-        let viewModel = HalfRealTimeScene.Markers2DMovable.ViewModel(nearObjectsPins: response.nearObjectsPins)
+        //let viewModel = HalfRealTimeScene.Markers2DMovable.ViewModel(nearObjectsPins: response.nearObjectsPins)
         //MARK: TODO - side pin markers
         //displayMarkers2DMovable(viewModel: viewModel)
     }
@@ -1847,29 +1848,29 @@ extension HalfRealTimeSceneInteractor {
     
     func presentArSessionStatus(response: HalfRealTimeScene.ArSessionStatus.Response) {
         
-        let message = self.getArkitStateMessage(state: response.trackingState)
-        var color = self.getArkitStateColor(state: response.trackingState)
-        let cameraStatus = getCameraStatus(state: response.state)
-        let scaleState = getScaleType(state: response.state)
+//        let message = self.getArkitStateMessage(state: response.trackingState)
+//        var color = self.getArkitStateColor(state: response.trackingState)
+//        let cameraStatus = getCameraStatus(state: response.state)
+//        let scaleState = getScaleType(state: response.state)
         
-        switch response.factor {
-            case .degradated:
-                color = .red
-            case .normal:
-                break
-        }
+//        switch response.factor {
+//            case .degradated:
+//                color = .red
+//            case .normal:
+//                break
+//        }
         
-        let status = String(format: "\(cameraStatus) \(message), \(scaleState)")
-        let viewModel = HalfRealTimeScene.ArSessionStatus.ViewModel(status: status, color: color)
+        //let status = String(format: "\(cameraStatus) \(message), \(scaleState)")
+        //let viewModel = HalfRealTimeScene.ArSessionStatus.ViewModel(status: status, color: color)
         //viewController?.displayArSessionStatus(viewModel: viewModel)
     }
     
     func presentArTrackingState(response: HalfRealTimeScene.ArTrackingState.Response) {
-        let message = self.getArkitStateMessage(state: response.trackingState)
-        let color = self.getArkitStateColor(state: response.trackingState)
-        let cameraStatus = getCameraStatus(state: response.state)
-        let scaleState = getScaleType(state: response.state)
-        let viewModel = HalfRealTimeScene.ArSessionStatus.ViewModel(status: "\(cameraStatus) \(message) \(scaleState)", color: color)
+        //let message = self.getArkitStateMessage(state: response.trackingState)
+        //let color = self.getArkitStateColor(state: response.trackingState)
+        //let cameraStatus = getCameraStatus(state: response.state)
+        //let scaleState = getScaleType(state: response.state)
+        //let viewModel = HalfRealTimeScene.ArSessionStatus.ViewModel(status: "\(cameraStatus) \(message) \(scaleState)", color: color)
         //viewController?.displayArSessionStatus(viewModel: viewModel)
     }
     
