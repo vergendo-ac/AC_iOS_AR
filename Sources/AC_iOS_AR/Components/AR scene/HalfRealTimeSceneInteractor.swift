@@ -1106,6 +1106,10 @@ extension HalfRealTimeSceneInteractor: HalfRealTimeSceneBusinessLogic {
             videoNode?.name = sid
             
             if let node = videoNode {
+                
+                if let isVideoFilter = stickerFilters[StickerFilter.video.title] {
+                    node.isHidden = !isVideoFilter
+                }
         
                 self.worker?.loadSource(url: url) { player in
                     guard player != nil else {

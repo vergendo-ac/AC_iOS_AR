@@ -47,6 +47,8 @@ class HalfRealTimeSceneViewController: UIViewController {
     private var dataIsTaken: Bool = true
     private var arBackView: UIView?
     
+    private let notificationCenter = NotificationCenter.default
+    
     // MARK: Object lifecycle
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -72,9 +74,31 @@ class HalfRealTimeSceneViewController: UIViewController {
         self.makeSettings()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        print("AR viewWillAppear")
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        print("AR viewWillDisappear")
+        self.stopAR()
+    }
+    
     private func makeSettings() {
         let request = HalfRealTimeScene.Settings.Request(pinViewSize: self.view.frame.size)
         self.interactor?.makeSettings(request: request)
+    }
+    
+    private func setupNotificationCenter() {
+        //https://dev.to/sadra/how-to-detect-when-app-moves-to-background-or-foreground
+        notificationCenter.addObserver(self, selector: #selector(appBecameActive), name: UIApplication.didBecomeActiveNotification, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(appBecameNotActive), name: UIApplication.willResignActiveNotification, object: nil)
+        UIDevice.current.beginGeneratingDeviceOrientationNotifications()
+    }
+    @objc func appBecameNotActive() {
+        self.viewWillDisappear(true)
+    }
+    @objc func appBecameActive() {
+        self.viewWillAppear(true)
     }
     
     private func showClusters(clusters: [UIView]?) {
