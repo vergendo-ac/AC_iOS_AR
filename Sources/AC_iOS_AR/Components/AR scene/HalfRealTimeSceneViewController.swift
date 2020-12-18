@@ -72,6 +72,7 @@ class HalfRealTimeSceneViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.makeSettings()
+        self.setupNotificationCenter()
     }
     
     override func viewWillAppear(_ animated: Bool) {
