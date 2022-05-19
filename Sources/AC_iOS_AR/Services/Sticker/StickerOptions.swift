@@ -332,7 +332,8 @@ public class StickerOptions {
         if stickerText.count > 0 { stickerOptions[StickerOptions.title] = stickerText }
         if pathString.count > 0 { stickerOptions[StickerOptions.path] = fixHttp(pathString) }
         if stickerIDString.count > 0 { stickerOptions[StickerOptions.stickerID] = stickerIDString }
-        if stickerTypeString.count > 0 { stickerOptions[StickerOptions.stickerType] = stickerTypeString }
+        if let sTs = stickerTypeString, sTs.count > 0 { stickerOptions[StickerOptions.stickerType] = sTs }
+        
         if let sSTp = stickerSubTypeString, sSTp.count > 0 { stickerOptions[StickerOptions.stickerSubType] = sSTp }
 
         return stickerOptions
